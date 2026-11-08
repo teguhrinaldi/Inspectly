@@ -30,6 +30,7 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
     formats: const [BarcodeFormat.qrCode],
   );
   bool _handling = false;
+  final _repeatGuard = ScanRepeatGuard();
   bool _starting = false;
   String? _error;
   Site? _site;
@@ -57,17 +58,22 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
           _handling = false;
         });
       },
-      failure: (f) => setState(() {
-        _error = f.message;
-        _handling = false;
-      }),
+      failure: (f) {
+        _repeatGuard.failed(code, DateTime.now());
+        setState(() {
+          _error = f.message;
+          _handling = false;
+        });
+      },
     );
   }
 
   void _onDetect(BarcodeCapture capture) {
     if (_site != null) return;
     final code = capture.barcodes.firstOrNull?.rawValue;
-    if (code != null) _lookup(code);
+    if (code != null && _repeatGuard.shouldLookUp(code, DateTime.now())) {
+      _lookup(code);
+    }
   }
 
   Future<void> _enterManually() async {
@@ -562,4 +568,21 @@ class _FramePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// The scanner reports the same code ~4 times a second while it stays in
+/// view; a code that just failed to match a site is not looked up again for
+/// a few seconds (QC-045). Typing a code manually is not affected.
+class ScanRepeatGuard {
+  static const _pause = Duration(seconds: 3);
+  String? _code;
+  DateTime? _at;
+
+  bool shouldLookUp(String code, DateTime now) =>
+      code != _code || _at == null || now.difference(_at!) >= _pause;
+
+  void failed(String code, DateTime now) {
+    _code = code;
+    _at = now;
+  }
 }
