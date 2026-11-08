@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../core/errors/failure.dart';
 import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
@@ -26,8 +28,12 @@ class ApiAuthRepository implements AuthRepository {
         );
         return response.data as Map<String, dynamic>;
       });
-      await _tokenStorage.write(data['token'] as String);
-      return Success(AppUser.fromJson(data['user'] as Map<String, dynamic>));
+      final user = await _client.guard(() async {
+        await _tokenStorage.write(data['token'] as String);
+        return AppUser.fromJson(data['user'] as Map<String, dynamic>);
+      });
+      await _tokenStorage.writeUser(jsonEncode(user.toJson()));
+      return Success(user);
     } on Failure catch (f) {
       return Failed(f);
     }
@@ -55,9 +61,29 @@ class ApiAuthRepository implements AuthRepository {
         return response.data as Map<String, dynamic>;
       });
       // GET /me responds {"user": {...}}, like POST /login.
-      return Success(AppUser.fromJson(data['user'] as Map<String, dynamic>));
+      final user = await _client.guard(
+        () async => AppUser.fromJson(data['user'] as Map<String, dynamic>),
+      );
+      await _tokenStorage.writeUser(jsonEncode(user.toJson()));
+      return Success(user);
     } on Failure catch (f) {
+      // No connection: keep working as the last known user. The token is
+      // re-validated on the next request that does reach the server.
+      if (f is NetworkFailure || f is TimeoutFailure) {
+        final cached = await _cachedUser();
+        if (cached != null) return Success(cached);
+      }
       return Failed(f);
+    }
+  }
+
+  Future<AppUser?> _cachedUser() async {
+    try {
+      final json = await _tokenStorage.readUser();
+      if (json == null) return null;
+      return AppUser.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    } catch (_) {
+      return null; // unreadable cache = no cache
     }
   }
 

@@ -8,8 +8,18 @@ class TokenStorage {
 
   final FlutterSecureStorage _storage;
   static const _key = 'inspectly.auth_token';
+  static const _userKey = 'inspectly.auth_user';
 
   Future<String?> read() => _storage.read(key: _key);
   Future<void> write(String token) => _storage.write(key: _key, value: token);
-  Future<void> clear() => _storage.delete(key: _key);
+  Future<void> clear() async {
+    await _storage.delete(key: _key);
+    await _storage.delete(key: _userKey);
+  }
+
+  /// Last signed-in user (JSON), so a cold start without network can keep
+  /// the inspector signed in instead of sending them back to the login.
+  Future<String?> readUser() => _storage.read(key: _userKey);
+  Future<void> writeUser(String json) =>
+      _storage.write(key: _userKey, value: json);
 }

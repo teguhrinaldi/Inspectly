@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
@@ -75,6 +77,16 @@ class ApiClient {
   final Dio dio;
   final TokenStorage _tokenStorage;
 
+  static final _unauthorized = StreamController<void>.broadcast();
+
+  /// Fires whenever the API rejects the stored token (HTTP 401 on any
+  /// request other than the login itself). AuthNotifier listens to this to
+  /// end the session everywhere at once.
+  static Stream<void> get onUnauthorized => _unauthorized.stream;
+
+  @visibleForTesting
+  static void reportUnauthorized() => _unauthorized.add(null);
+
   /// Runs [request] and maps any [DioException] to a [Failure], so callers
   /// only ever deal with `Result<T>` (see core/utils/result.dart).
   Future<T> guard<T>(Future<T> Function() request) async {
@@ -146,6 +158,9 @@ class ApiClient {
 
     switch (status) {
       case 401:
+        if (!e.requestOptions.path.endsWith('/login')) {
+          reportUnauthorized();
+        }
         return UnauthorizedFailure(
           message ?? 'Your session has expired. Please log in again.',
         );
