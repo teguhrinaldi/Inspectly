@@ -16,7 +16,7 @@ class FindingStoreRequest extends FormRequest
     {
         return [
             'inspection_id' => ['required', 'integer', 'exists:inspections,id'],
-            'inspection_item_id' => ['nullable', 'integer', 'exists:inspection_items,id'],
+            'inspection_item_id' => ['nullable', 'integer', Rule::exists('inspection_items', 'id')->where('inspection_id', $this->integer('inspection_id'))],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'severity' => ['required', Rule::in(['critical', 'high', 'medium', 'low'])],
