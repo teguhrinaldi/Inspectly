@@ -186,16 +186,10 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
                       Row(
                         children: [
                           StatusBadge(
-                            style:
-                                inspection.status == InspectionStatus.inProgress
-                                ? const StatusStyle(
-                                    icon: LucideIcons.circleDot,
-                                    tone: Tone.teal,
-                                    label: 'In Progress',
-                                  )
-                                : StatusStyle.forInspectionStatus(
-                                    inspection.status,
-                                  ),
+                            // One colour per status everywhere (QC-059).
+                            style: StatusStyle.forInspectionStatus(
+                              inspection.status,
+                            ),
                             showIcon: true,
                             large: true,
                           ),
