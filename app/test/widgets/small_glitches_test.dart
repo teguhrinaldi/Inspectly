@@ -11,7 +11,9 @@ void main() {
   testWidgets('empty avatar url falls back to initials', (tester) async {
     await pumpScreen(
       tester,
-      const Scaffold(body: AppAvatar(url: '', name: 'Michael Carter')),
+      const Scaffold(
+        body: AppAvatar(url: '', name: 'Michael Carter'),
+      ),
     );
     await tester.pumpAndSettle();
     expect(find.text('MC'), findsOneWidget);
@@ -21,9 +23,7 @@ void main() {
   /// the system theme on a cold start).
   test('saved theme mode is used from the very first read', () {
     final c = ProviderContainer(
-      overrides: [
-        initialThemeModeProvider.overrideWithValue(ThemeMode.dark),
-      ],
+      overrides: [initialThemeModeProvider.overrideWithValue(ThemeMode.dark)],
     );
     addTearDown(c.dispose);
     expect(c.read(themeModeProvider), ThemeMode.dark);
