@@ -26,7 +26,8 @@ via `--dart-define=INSPECTLY_API_BASE_URL=...` (see `docs/installation.md` §4).
 3. Copy `.env.example` to `.env`, fill in real `DB_*`, `APP_URL`, generate
    `APP_KEY` (`php artisan key:generate`), set `APP_ENV=production`,
    `APP_DEBUG=false`.
-4. `php artisan migrate --force` (add `--seed` only for a staging/demo
+4. `php artisan migrate --force` (demo data is skipped in production unless
+   `ALLOW_DEMO_SEED=true` is set; add `--seed` only for a staging/demo
    environment — never seed fake customers/inspectors into a real production
    database).
 5. `php artisan storage:link` (evidence/signature file URLs depend on this).

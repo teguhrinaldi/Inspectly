@@ -45,6 +45,12 @@ return [
     'debug' => (bool) env('APP_DEBUG', false),
 
     /*
+    | Allow `db:seed` to load the demo story (incl. the demo admin account)
+    | in production — only for a public demo server.
+    */
+    'allow_demo_seed' => (bool) env('ALLOW_DEMO_SEED', false),
+
+    /*
     |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
