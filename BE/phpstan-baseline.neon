@@ -1,0 +1,961 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Filament\\Pages\\Dashboard\:\:recentFindings\(\) should return Illuminate\\Support\\Collection\<int, App\\Models\\Finding\> but returns Illuminate\\Support\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Filament/Pages/Dashboard.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Filament/Pages/Dashboard.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$inspector\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$scheduled_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$site\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$template\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$checklistItems\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionResource/Pages/ListInspections.php
+
+		-
+			message: '#^Anonymous function never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Method App\\Filament\\Resources\\InspectionTemplateResource\\Pages\\EditInspectionTemplate\:\:getSections\(\) should return Illuminate\\Support\\Collection\<int, App\\Models\\TemplateSection\> but returns Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Method App\\Filament\\Resources\\InspectionTemplateResource\\Pages\\EditInspectionTemplate\:\:section\(\) should return App\\Models\\TemplateSection but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Parameter \#1 \$value of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:search\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: bool\)\|Illuminate\\Database\\Eloquent\\Model, Closure\(App\\Models\\TemplateSection\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Property App\\Filament\\Resources\\InspectionTemplateResource\\Pages\\EditInspectionTemplate\:\:\$record \(App\\Models\\InspectionTemplate\) does not accept Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Filament/Resources/InspectionTemplateResource/Pages/EditInspectionTemplate.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Filament/Resources/InspectorResource/Pages/EditInspector.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$checklistItems\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/InspectionController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$evidence\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/InspectionController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$requires_evidence\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/InspectionController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:filter\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: bool\)\|null, Closure\(App\\Models\\InspectionItem\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Api/InspectionController.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:contains\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: bool\)\|Illuminate\\Database\\Eloquent\\Model\|int\|string, Closure\(App\\Models\\InspectionItem\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Api/InspectionController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$category\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$inspectionItem\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/SiteController.php
+
+		-
+			message: '#^Parameter \#1 \$finding of method App\\Http\\Controllers\\Api\\SiteController\:\:normalizeTitle\(\) expects App\\Models\\Finding, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Api/SiteController.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ActivityResource\:\:\$actor\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ActivityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ActivityResource\:\:\$actor_user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ActivityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ActivityResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ActivityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ActivityResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ActivityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ActivityResource\:\:\$inspection_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ActivityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ActivityResource\:\:\$occurred_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ActivityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ActivityResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ActivityResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$contact_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$accuracy\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$captured_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$finding_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$inspection_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$inspection_item_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$latitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$longitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\EvidenceResource\:\:\$watermarked_path\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/EvidenceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$inspection_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$inspection_item_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$location\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$recommendation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$severity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\FindingResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/FindingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$inspection_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$note\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$result\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$templateChecklistItem\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionItemResource\:\:\$template_checklist_item_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$completed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$inspector\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$inspector_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$location_captured_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$location_lat\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$location_lng\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$next_due_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$pass_percentage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$recurrence\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$scheduled_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$site\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$site_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$started_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$template\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$template_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\InspectionResource\:\:completedItemCount\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\InspectionResource\:\:totalItemCount\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/InspectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionTemplateResource\:\:\$category\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionTemplateResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionTemplateResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionTemplateResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionTemplateResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionTemplateResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectionTemplateResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectionTemplateResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$avatar_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InspectorResource\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InspectorResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SignatureResource\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/SignatureResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SignatureResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SignatureResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SignatureResource\:\:\$inspection_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SignatureResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SignatureResource\:\:\$signed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SignatureResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SignatureResource\:\:\$signer_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SignatureResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SignatureResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SignatureResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$cover_image_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$latitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$longitude\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$qr_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SiteResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SiteResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateChecklistItemResource\:\:\$help_text\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateChecklistItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateChecklistItemResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateChecklistItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateChecklistItemResource\:\:\$label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateChecklistItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateChecklistItemResource\:\:\$requires_evidence\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateChecklistItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateChecklistItemResource\:\:\$section_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateChecklistItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateChecklistItemResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateChecklistItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateSectionResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateSectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateSectionResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateSectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateSectionResource\:\:\$template_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateSectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TemplateSectionResource\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TemplateSectionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$avatar_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:sum\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model\)\: \(0\|1\|2\|5\|8\)\)\|string\|null, Closure\(App\\Models\\Finding\)\: \(0\|1\|2\|5\|8\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/Inspection.php
+
+		-
+			message: '#^Parameter \#1 \$at of closure expects Illuminate\\Support\\Carbon\|null, Carbon\\Carbon\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Support/InspectionStats.php
+
+		-
+			message: '#^Method App\\Support\\TrendWindow\:\:activityDate\(\) should return Illuminate\\Support\\Carbon\|null but returns Carbon\\Carbon\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Support/TrendWindow.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Illuminate\\Console\\Command\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: database/seeders/DatabaseSeeder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$checklistItems\.$#'
+			identifier: property.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$latitude\.$#'
+			identifier: property.notFound
+			count: 2
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$longitude\.$#'
+			identifier: property.notFound
+			count: 2
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Method Database\\Seeders\\DemoSeeder\:\:answer\(\) should return Illuminate\\Support\\Collection\<string, App\\Models\\InspectionItem\> but returns Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\), Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: return.type
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Parameter \#4 \$actor of method Database\\Seeders\\DemoSeeder\:\:logActivity\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: database/seeders/DemoSeeder.php
