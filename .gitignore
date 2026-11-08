@@ -1,0 +1,10 @@
+# Signing material must never be committed (QC-019).
+**/key.properties
+*.jks
+*.keystore
+*.p12
+
+# Local environment files (BE/.env.testing is intentionally tracked).
+BE/.env
+BE/.env.backup
+BE/.env.production

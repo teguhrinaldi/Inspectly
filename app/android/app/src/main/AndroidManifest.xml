@@ -25,7 +25,7 @@
          after a reboot or an app update (plugin README, "Scheduling"). -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:label="inspectly"
+        android:label="Inspectly"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <!-- Required for zonedSchedule() reminders to actually be shown
