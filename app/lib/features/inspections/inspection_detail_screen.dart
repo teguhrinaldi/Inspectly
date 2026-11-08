@@ -324,22 +324,28 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
             color: p.background,
             border: Border(top: BorderSide(color: p.border)),
           ),
-          child: ResponsiveContent(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _starting ? null : _primaryAction,
-                  child: _starting
-                      ? const SizedBox.square(
-                          dimension: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Text(_ctaLabel),
+          // On tablets there is no bottom nav to absorb the home-indicator
+          // inset, so the button must stay clear of it (QC-039). On phones
+          // the shell's Scaffold already removed that padding.
+          child: SafeArea(
+            top: false,
+            child: ResponsiveContent(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _starting ? null : _primaryAction,
+                    child: _starting
+                        ? const SizedBox.square(
+                            dimension: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(_ctaLabel),
+                  ),
                 ),
               ),
             ),
