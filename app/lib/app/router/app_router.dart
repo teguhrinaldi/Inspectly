@@ -24,14 +24,20 @@ import '../shell/app_shell.dart';
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
+  // One router for the app's lifetime: auth changes only re-run the
+  // redirect (refreshListenable) instead of building a new GoRouter, which
+  // used to drop the navigation state and leak the old router (QC-030).
+  final auth = ValueNotifier<AuthState>(ref.read(authStateProvider));
+  ref.listen(authStateProvider, (_, next) => auth.value = next);
 
   String id(GoRouterState state) => state.pathParameters['id']!;
 
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: '/welcome',
+    refreshListenable: auth,
     redirect: (context, state) {
+      final authState = auth.value;
       if (authState is AuthUnknown) return null;
       final loggedIn = authState is AuthLoggedIn;
       final loc = state.matchedLocation;
@@ -137,4 +143,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+  ref.onDispose(() {
+    router.dispose();
+    auth.dispose();
+  });
+  return router;
 });
