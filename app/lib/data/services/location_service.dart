@@ -7,27 +7,29 @@ import 'package:geolocator/geolocator.dart';
 /// tracking.
 class LocationService {
   Future<LocationResult> getCurrentLocation() async {
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      return const LocationResult.unavailable(
-        'Location services are turned off on this device.',
-      );
-    }
-
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.denied) {
-      return const LocationResult.denied('Location permission was denied.');
-    }
-    if (permission == LocationPermission.deniedForever) {
-      return const LocationResult.denied(
-        'Location permission is permanently denied. Enable it in Settings to tag inspections with location.',
-      );
-    }
-
+    // Everything — including the permission checks — is inside the try: a
+    // platform error must never escape to the caller (QC-034).
     try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        return const LocationResult.unavailable(
+          'Location services are turned off on this device.',
+        );
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied) {
+        return const LocationResult.denied('Location permission was denied.');
+      }
+      if (permission == LocationPermission.deniedForever) {
+        return const LocationResult.denied(
+          'Location permission is permanently denied. Enable it in Settings to tag inspections with location.',
+        );
+      }
+
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
