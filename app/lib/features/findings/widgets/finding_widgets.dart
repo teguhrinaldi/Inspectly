@@ -287,7 +287,7 @@ class EvidenceThumb extends StatelessWidget {
   }
 }
 
-class EvidenceViewer extends StatelessWidget {
+class EvidenceViewer extends StatefulWidget {
   const EvidenceViewer({super.key, required this.items, required this.index});
 
   final List<Evidence> items;
@@ -302,20 +302,39 @@ class EvidenceViewer extends StatelessWidget {
   }
 
   @override
+  State<EvidenceViewer> createState() => _EvidenceViewerState();
+}
+
+/// Stateful so the "n / total" title follows the swiped photo and the
+/// PageController is created once and disposed (QC-046).
+class _EvidenceViewerState extends State<EvidenceViewer> {
+  late final PageController _controller = PageController(
+    initialPage: widget.index,
+  );
+  late int _current = widget.index;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: Text('${index + 1} / ${items.length}'),
+        title: Text('${_current + 1} / ${widget.items.length}'),
       ),
       body: PageView.builder(
-        controller: PageController(initialPage: index),
-        itemCount: items.length,
+        controller: _controller,
+        itemCount: widget.items.length,
+        onPageChanged: (i) => setState(() => _current = i),
         itemBuilder: (context, i) => InteractiveViewer(
           child: Center(
-            child: AppImage(items[i].displaySource, fit: BoxFit.contain),
+            child: AppImage(widget.items[i].displaySource, fit: BoxFit.contain),
           ),
         ),
       ),
