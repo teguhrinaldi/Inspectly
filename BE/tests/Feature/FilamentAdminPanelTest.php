@@ -130,6 +130,11 @@ class FilamentAdminPanelTest extends TestCase
 
     public function test_dashboard_reproduces_the_demo_story(): void
     {
+        // The demo story mixes fixed calendar days (site history on Jul 3 /
+        // Aug 12 / Sep 27, as in the mockup) with days relative to "today",
+        // so the mockup numbers only hold on the mockup's day. Freeze the
+        // clock there, exactly like the Flutter demo_data_store_test does.
+        $this->travelTo(\Illuminate\Support\Carbon::create(2026, 9, 29, 12));
         $this->seed(\Database\Seeders\DemoSeeder::class);
         $this->actingAs(User::where('email', 'admin@inspectly.test')->first());
 
