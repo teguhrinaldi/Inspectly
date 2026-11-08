@@ -91,7 +91,7 @@ class AppAvatar extends StatelessWidget {
     return ClipOval(
       child: SizedBox.square(
         dimension: size,
-        child: url == null
+        child: url == null || url!.isEmpty
             ? Container(
                 color: p.primarySoft,
                 alignment: Alignment.center,
