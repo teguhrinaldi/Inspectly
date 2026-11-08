@@ -24,6 +24,7 @@ import '../../data/repositories/mock/mock_template_repository.dart';
 import '../../data/repositories/signature_repository.dart';
 import '../../data/repositories/site_repository.dart';
 import '../../data/repositories/template_repository.dart';
+import 'auth_providers.dart';
 
 /// The single Demo Mode ↔ API Mode switch (spec §6). Every repository below
 /// is wired through this one flag — screens and controllers only ever depend
@@ -53,30 +54,48 @@ final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => useApiMode ? ApiAuthRepository() : MockAuthRepository(),
 );
 
-final inspectionRepositoryProvider = Provider<InspectionRepository>(
-  (ref) => useApiMode ? ApiInspectionRepository() : MockInspectionRepository(),
+/// Id of the signed-in user (null when signed out). Every data repository
+/// below watches it, so all cached lists/details are rebuilt whenever the
+/// user changes and one inspector never sees another's cached data on a
+/// shared device (QC-009). The auth repository itself must not watch it.
+final sessionUserIdProvider = Provider<String?>(
+  (ref) => switch (ref.watch(authStateProvider)) {
+    AuthLoggedIn(:final user) => user.id,
+    _ => null,
+  },
 );
 
-final siteRepositoryProvider = Provider<SiteRepository>(
-  (ref) => useApiMode ? ApiSiteRepository() : MockSiteRepository(),
-);
+final inspectionRepositoryProvider = Provider<InspectionRepository>((ref) {
+  ref.watch(sessionUserIdProvider);
+  return useApiMode ? ApiInspectionRepository() : MockInspectionRepository();
+});
 
-final customerRepositoryProvider = Provider<CustomerRepository>(
-  (ref) => useApiMode ? ApiCustomerRepository() : MockCustomerRepository(),
-);
+final siteRepositoryProvider = Provider<SiteRepository>((ref) {
+  ref.watch(sessionUserIdProvider);
+  return useApiMode ? ApiSiteRepository() : MockSiteRepository();
+});
 
-final inspectorRepositoryProvider = Provider<InspectorRepository>(
-  (ref) => useApiMode ? ApiInspectorRepository() : MockInspectorRepository(),
-);
+final customerRepositoryProvider = Provider<CustomerRepository>((ref) {
+  ref.watch(sessionUserIdProvider);
+  return useApiMode ? ApiCustomerRepository() : MockCustomerRepository();
+});
 
-final templateRepositoryProvider = Provider<TemplateRepository>(
-  (ref) => useApiMode ? ApiTemplateRepository() : MockTemplateRepository(),
-);
+final inspectorRepositoryProvider = Provider<InspectorRepository>((ref) {
+  ref.watch(sessionUserIdProvider);
+  return useApiMode ? ApiInspectorRepository() : MockInspectorRepository();
+});
 
-final evidenceRepositoryProvider = Provider<EvidenceRepository>(
-  (ref) => useApiMode ? ApiEvidenceRepository() : MockEvidenceRepository(),
-);
+final templateRepositoryProvider = Provider<TemplateRepository>((ref) {
+  ref.watch(sessionUserIdProvider);
+  return useApiMode ? ApiTemplateRepository() : MockTemplateRepository();
+});
 
-final signatureRepositoryProvider = Provider<SignatureRepository>(
-  (ref) => useApiMode ? ApiSignatureRepository() : MockSignatureRepository(),
-);
+final evidenceRepositoryProvider = Provider<EvidenceRepository>((ref) {
+  ref.watch(sessionUserIdProvider);
+  return useApiMode ? ApiEvidenceRepository() : MockEvidenceRepository();
+});
+
+final signatureRepositoryProvider = Provider<SignatureRepository>((ref) {
+  ref.watch(sessionUserIdProvider);
+  return useApiMode ? ApiSignatureRepository() : MockSignatureRepository();
+});
