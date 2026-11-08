@@ -21,6 +21,7 @@ import '../../data/models/enums.dart';
 import '../../data/models/inspection.dart';
 import '../../data/models/signature.dart';
 import '../../data/services/pdf_report_service.dart';
+import '../../core/errors/failure.dart';
 
 /// Inspector signature + customer acknowledgement. Once both are captured
 /// the inspection is completed and the risk summary opens.
@@ -38,7 +39,7 @@ class SignatureScreen extends ConsumerWidget {
         error: (e, _) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load inspection',
-          message: '$e',
+          message: userMessage(e),
         ),
         data: (inspection) => _SignatureBody(inspection: inspection),
       ),

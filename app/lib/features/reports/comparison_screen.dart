@@ -17,6 +17,7 @@ import '../../data/models/evidence.dart';
 import '../../data/models/finding.dart';
 import '../../data/models/inspection.dart';
 import '../../data/models/site_history.dart';
+import '../../core/errors/failure.dart';
 
 /// Previous vs current findings for the same site + template, plus the
 /// site's inspection history. Matching is deterministic (by checklist item).
@@ -42,7 +43,7 @@ class ComparisonScreen extends ConsumerWidget {
         error: (e, _) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load inspection',
-          message: '$e',
+          message: userMessage(e),
         ),
         data: (current) => ResponsiveContent(child: _Body(current: current)),
       ),

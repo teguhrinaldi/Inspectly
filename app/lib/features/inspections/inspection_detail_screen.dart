@@ -20,6 +20,7 @@ import '../findings/evidence_screen.dart';
 import '../findings/findings_screen.dart';
 import '../findings/widgets/finding_widgets.dart';
 import 'widgets/notes_tab.dart';
+import '../../core/errors/failure.dart';
 
 class InspectionDetailScreen extends ConsumerWidget {
   const InspectionDetailScreen({super.key, required this.inspectionId});
@@ -47,7 +48,7 @@ class InspectionDetailScreen extends ConsumerWidget {
         error: (err, st) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load this inspection',
-          message: '$err',
+          message: userMessage(err),
           action: OutlinedButton(
             onPressed: () =>
                 ref.invalidate(inspectionByIdProvider(inspectionId)),

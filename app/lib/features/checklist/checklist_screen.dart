@@ -16,6 +16,7 @@ import '../../data/models/inspection_item.dart';
 import '../findings/finding_actions.dart';
 import '../findings/widgets/finding_widgets.dart';
 import 'widgets/finding_form_sheet.dart';
+import '../../core/errors/failure.dart';
 
 /// One checklist item per page: result, photos and note, with
 /// Previous / Next. Finishing hands over to the signature step.
@@ -38,7 +39,7 @@ class ChecklistScreen extends ConsumerWidget {
         error: (err, st) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load checklist',
-          message: '$err',
+          message: userMessage(err),
         ),
         data: (inspection) => inspection.items.isEmpty
             ? const EmptyState(

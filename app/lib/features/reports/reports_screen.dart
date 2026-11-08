@@ -12,6 +12,7 @@ import '../../core/widgets/surfaces.dart';
 import '../../data/models/enums.dart';
 import '../../data/models/inspection.dart';
 import '../../data/repositories/inspection_repository.dart';
+import '../../core/errors/failure.dart';
 
 class ReportsScreen extends ConsumerWidget {
   const ReportsScreen({super.key});
@@ -33,7 +34,7 @@ class ReportsScreen extends ConsumerWidget {
             error: (e, _) => EmptyState(
               icon: LucideIcons.cloudOff,
               title: 'Could not load reports',
-              message: '$e',
+              message: userMessage(e),
             ),
             data: (list) {
               final reports = [...list]

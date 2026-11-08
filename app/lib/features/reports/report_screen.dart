@@ -6,6 +6,7 @@ import 'package:printing/printing.dart';
 import '../../app/providers/inspection_providers.dart';
 import '../../core/widgets/surfaces.dart';
 import '../../data/services/pdf_report_service.dart';
+import '../../core/errors/failure.dart';
 
 /// On-device generated PDF report with print / share / save.
 class ReportScreen extends ConsumerWidget {
@@ -22,7 +23,7 @@ class ReportScreen extends ConsumerWidget {
         error: (e, _) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load report',
-          message: '$e',
+          message: userMessage(e),
         ),
         data: (inspection) => PdfPreview(
           build: (format) => PdfReportService().generate(inspection),

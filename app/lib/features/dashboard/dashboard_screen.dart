@@ -17,6 +17,7 @@ import '../../data/services/notification_service.dart';
 import '../inspections/widgets/inspection_row.dart';
 import 'home_data.dart';
 import 'tablet_home.dart';
+import '../../core/errors/failure.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -67,7 +68,7 @@ class DashboardScreen extends ConsumerWidget {
           error: (err, st) => EmptyState(
             icon: LucideIcons.cloudOff,
             title: 'Could not load inspections',
-            message: '$err',
+            message: userMessage(err),
             action: OutlinedButton(
               onPressed: () => ref.invalidate(inspectionListProvider),
               child: const Text('Try again'),

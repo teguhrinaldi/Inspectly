@@ -11,6 +11,7 @@ import '../../data/models/finding.dart';
 import '../../data/models/inspection.dart';
 import 'findings_screen.dart';
 import 'widgets/finding_widgets.dart';
+import '../../core/errors/failure.dart';
 
 class EvidenceScreen extends ConsumerWidget {
   const EvidenceScreen({super.key, required this.inspectionId});
@@ -26,7 +27,7 @@ class EvidenceScreen extends ConsumerWidget {
         error: (e, _) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load evidence',
-          message: '$e',
+          message: userMessage(e),
         ),
         data: (inspection) => ResponsiveContent(
           child: ListView(

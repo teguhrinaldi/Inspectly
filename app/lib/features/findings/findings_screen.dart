@@ -14,6 +14,7 @@ import '../../data/models/inspection.dart';
 import 'finding_actions.dart';
 import 'widgets/finding_widgets.dart';
 import 'widgets/photo_capture.dart';
+import '../../core/errors/failure.dart';
 
 class FindingsScreen extends ConsumerWidget {
   const FindingsScreen({super.key, required this.inspectionId});
@@ -29,7 +30,7 @@ class FindingsScreen extends ConsumerWidget {
         error: (e, _) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load findings',
-          message: '$e',
+          message: userMessage(e),
         ),
         data: (inspection) =>
             ResponsiveContent(child: FindingsView(inspection: inspection)),

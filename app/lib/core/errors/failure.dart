@@ -3,7 +3,16 @@
 sealed class Failure {
   const Failure(this.message);
   final String message;
+
+  @override
+  String toString() => message;
 }
+
+/// Text to show the user for any error caught by the UI: a [Failure]'s own
+/// message, otherwise a generic sentence (raw exceptions stay in the logs).
+String userMessage(Object error) => error is Failure
+    ? error.message
+    : 'Something went wrong. Please try again.';
 
 class NetworkFailure extends Failure {
   const NetworkFailure([

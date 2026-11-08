@@ -12,6 +12,7 @@ import '../../data/models/enums.dart';
 import '../../data/models/inspection.dart';
 import '../../data/repositories/inspection_repository.dart';
 import 'widgets/inspection_row.dart';
+import '../../core/errors/failure.dart';
 
 class InspectionListScreen extends ConsumerStatefulWidget {
   const InspectionListScreen({super.key});
@@ -141,7 +142,7 @@ class _InspectionListScreenState extends ConsumerState<InspectionListScreen> {
                   error: (err, st) => EmptyState(
                     icon: LucideIcons.cloudOff,
                     title: 'Could not load inspections',
-                    message: '$err',
+                    message: userMessage(err),
                   ),
                   data: (items) {
                     if (items.isEmpty) {

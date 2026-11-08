@@ -16,6 +16,7 @@ import '../../data/models/enums.dart';
 import '../../data/models/inspection.dart';
 import '../../data/services/pdf_report_service.dart';
 import '../findings/widgets/finding_widgets.dart';
+import '../../core/errors/failure.dart';
 
 class RiskSummaryScreen extends ConsumerWidget {
   const RiskSummaryScreen({super.key, required this.inspectionId});
@@ -36,7 +37,7 @@ class RiskSummaryScreen extends ConsumerWidget {
         error: (e, _) => EmptyState(
           icon: LucideIcons.cloudOff,
           title: 'Could not load summary',
-          message: '$e',
+          message: userMessage(e),
         ),
         data: (i) => ResponsiveContent(child: _SummaryBody(inspection: i)),
       ),
