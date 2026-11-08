@@ -20,7 +20,7 @@ class ApiInspectionRepository implements InspectionRepository {
   ]) async {
     try {
       final items = await _client.guard(() async {
-        final response = await _client.dio.get(
+        final data = await _client.getAllPages(
           '/inspections',
           queryParameters: {
             if (filter.status != null)
@@ -30,7 +30,6 @@ class ApiInspectionRepository implements InspectionRepository {
             if (filter.inspectorId != null) 'inspector_id': filter.inspectorId,
           },
         );
-        final data = response.data['data'] as List<dynamic>;
         return data
             .map((e) => Inspection.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -187,11 +186,10 @@ class ApiInspectionRepository implements InspectionRepository {
   Future<Result<List<ActivityEntry>>> activities(String inspectionId) async {
     try {
       final items = await _client.guard(() async {
-        final response = await _client.dio.get(
+        final data = await _client.getAllPages(
           '/activities',
           queryParameters: {'inspection_id': inspectionId},
         );
-        final data = response.data['data'] as List<dynamic>;
         return data
             .map((e) => ActivityEntry.fromJson(e as Map<String, dynamic>))
             .toList();

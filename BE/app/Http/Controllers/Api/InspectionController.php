@@ -44,7 +44,7 @@ class InspectionController extends Controller
             $query->where('inspector_id', $request->integer('inspector_id'));
         }
 
-        $perPage = min(max($request->integer('per_page', 50), 1), 100);
+        $perPage = $this->perPage($request, 50);
         $inspections = $query->orderByDesc('scheduled_at')->orderByDesc('id')->paginate($perPage)->withQueryString();
 
         return InspectionResource::collection($inspections)->response();

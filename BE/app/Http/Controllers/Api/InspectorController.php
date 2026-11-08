@@ -28,7 +28,7 @@ class InspectorController extends Controller
             $query->where('name', 'like', '%'.$request->string('search').'%');
         }
 
-        $inspectors = $query->orderBy('name')->paginate(15)->withQueryString();
+        $inspectors = $query->orderBy('name')->paginate($this->perPage($request))->withQueryString();
 
         return InspectorResource::collection($inspectors)->response();
     }

@@ -16,11 +16,10 @@ class ApiSiteRepository implements SiteRepository {
   Future<Result<List<Site>>> list({String? customerId, String? search}) async {
     try {
       final items = await _client.guard(() async {
-        final response = await _client.dio.get(
+        final data = await _client.getAllPages(
           '/sites',
           queryParameters: {'customer_id': ?customerId, 'search': ?search},
         );
-        final data = response.data['data'] as List<dynamic>;
         return data
             .map((e) => Site.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -47,12 +46,21 @@ class ApiSiteRepository implements SiteRepository {
   @override
   Future<Result<Site>> findByQrCode(String qrCode) async {
     try {
-      final items = await list();
-      final matches = items.dataOrNull?.where((s) => s.qrCode == qrCode);
-      if (matches == null || matches.isEmpty) {
+      // Ask the server for this exact code: the site may be on any page.
+      final sites = await _client.guard(() async {
+        final data = await _client.getAllPages(
+          '/sites',
+          queryParameters: {'qr_code': qrCode},
+        );
+        return data
+            .map((e) => Site.fromJson(e as Map<String, dynamic>))
+            .where((s) => s.qrCode == qrCode)
+            .toList();
+      });
+      if (sites.isEmpty) {
         return const Failed(NotFoundFailure('No site matches this QR code.'));
       }
-      return Success(matches.first);
+      return Success(sites.first);
     } on Failure catch (f) {
       return Failed(f);
     }
@@ -65,8 +73,7 @@ class ApiSiteRepository implements SiteRepository {
     // project down to the compact SiteHistoryEntry the UI actually needs.
     try {
       final items = await _client.guard(() async {
-        final response = await _client.dio.get('/sites/$siteId/history');
-        final data = response.data['data'] as List<dynamic>;
+        final data = await _client.getAllPages('/sites/$siteId/history');
         return data.map((e) {
           final inspection = Inspection.fromJson(e as Map<String, dynamic>);
           return SiteHistoryEntry(

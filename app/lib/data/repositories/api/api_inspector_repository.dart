@@ -13,11 +13,10 @@ class ApiInspectorRepository implements InspectorRepository {
   Future<Result<List<Inspector>>> list({String? search}) async {
     try {
       final items = await _client.guard(() async {
-        final response = await _client.dio.get(
+        final data = await _client.getAllPages(
           '/inspectors',
           queryParameters: {'search': ?search},
         );
-        final data = response.data['data'] as List<dynamic>;
         return data
             .map((e) => Inspector.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -31,11 +30,13 @@ class ApiInspectorRepository implements InspectorRepository {
   @override
   Future<Result<Inspector>> getById(String id) async {
     try {
+      // No GET /inspectors/{id}; list() reads every page, and a failed
+      // list is reported as that failure rather than as "not found".
       final all = await list();
-      final match = all.dataOrNull?.where((i) => i.id == id);
-      if (match == null || match.isEmpty) {
-        return const Failed(NotFoundFailure());
-      }
+      final failure = all.when(success: (_) => null, failure: (f) => f);
+      if (failure != null) return Failed(failure);
+      final match = all.dataOrNull!.where((i) => i.id == id);
+      if (match.isEmpty) return const Failed(NotFoundFailure());
       return Success(match.first);
     } on Failure catch (f) {
       return Failed(f);

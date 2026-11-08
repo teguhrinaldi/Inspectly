@@ -27,7 +27,7 @@ class InspectionTemplateController extends Controller
             $query->where('is_active', true);
         }
 
-        $templates = $query->orderBy('name')->paginate(15)->withQueryString();
+        $templates = $query->orderBy('name')->paginate($this->perPage($request))->withQueryString();
 
         return InspectionTemplateResource::collection($templates)->response();
     }

@@ -66,12 +66,16 @@ DELETE /inspection-templates/{id} (admin)
 
 ```
 GET  /customers?search=          GET/POST/PUT admin-gated for writes
-GET  /sites?customer_id=&search=&status=
+GET  /sites?customer_id=&search=&status=&qr_code=   (qr_code = exact match, used by the QR scanner)
 GET  /sites/{id}
 POST /sites  |  PUT /sites/{id}          (open to any authenticated user)
 GET  /sites/{id}/history                 -> paginated Inspection list (drafts excluded), most recent first
 GET  /sites/{id}/comparison?inspection_id=
 GET  /inspectors?search=          GET open; POST/PUT admin-gated
+
+Every list endpoint is paginated and accepts `per_page` (1-100; default 15,
+50 for inspections and activities). The app reads all pages by following
+`meta.last_page` (`ApiClient.getAllPages`).
 ```
 
 ### `GET /sites/{id}/comparison` response shape (bespoke, not a JsonResource)

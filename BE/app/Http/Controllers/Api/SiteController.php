@@ -31,7 +31,11 @@ class SiteController extends Controller
             $query->where('status', $request->string('status'));
         }
 
-        $sites = $query->orderBy('name')->paginate(15)->withQueryString();
+        if ($request->filled('qr_code')) {
+            $query->where('qr_code', $request->string('qr_code'));
+        }
+
+        $sites = $query->orderBy('name')->paginate($this->perPage($request))->withQueryString();
 
         return SiteResource::collection($sites)->response();
     }
@@ -62,7 +66,7 @@ class SiteController extends Controller
     /**
      * Real, chronologically ordered inspection history for a site.
      */
-    public function history(Site $site): JsonResponse
+    public function history(Request $request, Site $site): JsonResponse
     {
         $inspections = Inspection::query()
             ->where('site_id', $site->id)
@@ -70,7 +74,7 @@ class SiteController extends Controller
             ->with(['template', 'inspector'])
             ->orderByDesc('scheduled_at')
             ->orderByDesc('completed_at')
-            ->paginate(15);
+            ->paginate($this->perPage($request));
 
         return InspectionResource::collection($inspections)->response();
     }

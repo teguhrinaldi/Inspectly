@@ -20,7 +20,7 @@ class ActivityController extends Controller
             ->with('actor')
             ->where('inspection_id', $request->integer('inspection_id'))
             ->orderBy('occurred_at')
-            ->paginate(50);
+            ->paginate($this->perPage($request, 50));
 
         return ActivityResource::collection($activities)->response();
     }

@@ -13,11 +13,10 @@ class ApiCustomerRepository implements CustomerRepository {
   Future<Result<List<Customer>>> list({String? search}) async {
     try {
       final items = await _client.guard(() async {
-        final response = await _client.dio.get(
+        final data = await _client.getAllPages(
           '/customers',
           queryParameters: {'search': ?search},
         );
-        final data = response.data['data'] as List<dynamic>;
         return data
             .map((e) => Customer.fromJson(e as Map<String, dynamic>))
             .toList();
@@ -31,12 +30,11 @@ class ApiCustomerRepository implements CustomerRepository {
   @override
   Future<Result<Customer>> getById(String id) async {
     try {
-      final all = await list();
-      final match = all.dataOrNull?.where((c) => c.id == id);
-      if (match == null || match.isEmpty) {
-        return const Failed(NotFoundFailure());
-      }
-      return Success(match.first);
+      final customer = await _client.guard(() async {
+        final response = await _client.dio.get('/customers/$id');
+        return Customer.fromJson(_client.unwrap(response));
+      });
+      return Success(customer);
     } on Failure catch (f) {
       return Failed(f);
     }

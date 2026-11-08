@@ -15,11 +15,10 @@ class ApiTemplateRepository implements TemplateRepository {
   }) async {
     try {
       final items = await _client.guard(() async {
-        final response = await _client.dio.get(
+        final data = await _client.getAllPages(
           '/inspection-templates',
           queryParameters: {if (activeOnly) 'active': '1'},
         );
-        final data = response.data['data'] as List<dynamic>;
         return data
             .map((e) => InspectionTemplate.fromJson(e as Map<String, dynamic>))
             .toList();

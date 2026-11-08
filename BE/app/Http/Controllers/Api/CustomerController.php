@@ -24,7 +24,7 @@ class CustomerController extends Controller
             $query->where('status', $request->string('status'));
         }
 
-        $customers = $query->orderBy('name')->paginate(15)->withQueryString();
+        $customers = $query->orderBy('name')->paginate($this->perPage($request))->withQueryString();
 
         return CustomerResource::collection($customers)->response();
     }

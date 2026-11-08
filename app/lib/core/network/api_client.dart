@@ -95,6 +95,33 @@ class ApiClient {
     }
   }
 
+  /// Every list endpoint is paginated (`{data, links, meta}`); this follows
+  /// `meta.last_page` and returns the rows of all pages, so a list is never
+  /// silently cut off after the first page. Call inside [guard].
+  Future<List<dynamic>> getAllPages(
+    String path, {
+    Map<String, dynamic> queryParameters = const {},
+    int perPage = 100,
+  }) async {
+    final rows = <dynamic>[];
+    var page = 1;
+    while (true) {
+      final response = await dio.get(
+        path,
+        queryParameters: {
+          ...queryParameters,
+          'per_page': perPage,
+          'page': page,
+        },
+      );
+      final body = response.data as Map;
+      rows.addAll(body['data'] as List<dynamic>);
+      final lastPage = (body['meta'] as Map?)?['last_page'] as int? ?? page;
+      if (page >= lastPage) return rows;
+      page++;
+    }
+  }
+
   /// Laravel's `JsonResource` wraps every *single*-item response in a
   /// `{"data": {...}}` envelope by default (collections do too, which is
   /// already the natural shape for pagination — this helper is only for the
