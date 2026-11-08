@@ -148,6 +148,11 @@ class FindingDetailSheet extends ConsumerWidget {
     final style = StatusStyle.forSeverity(finding.severity);
     final editable = inspection.status != InspectionStatus.completed;
 
+    // Read before any await: the sheet may be closed by then.
+    final evidenceRepo = ref.read(evidenceRepositoryProvider);
+    final inspectionRepo = ref.read(inspectionRepositoryProvider);
+    final messenger = ScaffoldMessenger.maybeOf(context);
+
     Future<void> addPhoto() async {
       final photo = await capturePhoto(
         context,
@@ -155,29 +160,39 @@ class FindingDetailSheet extends ConsumerWidget {
         inspectorName: inspection.inspectorName,
       );
       if (photo == null) return;
-      await ref
-          .read(evidenceRepositoryProvider)
-          .attach(
-            inspectionId: inspection.id,
-            findingId: finding.id,
-            localFilePath: photo.path,
-            latitude: photo.latitude,
-            longitude: photo.longitude,
-          );
-      ref.invalidateInspection(inspection.id);
+      final result = await evidenceRepo.attach(
+        inspectionId: inspection.id,
+        findingId: finding.id,
+        localFilePath: photo.path,
+        latitude: photo.latitude,
+        longitude: photo.longitude,
+      );
+      if (!result.isSuccess) {
+        messenger?.showSnackBar(
+          const SnackBar(content: Text('Could not save the photo.')),
+        );
+      }
+      if (context.mounted) ref.invalidateInspection(inspection.id);
     }
 
     Future<void> toggleResolved() async {
-      await ref
-          .read(inspectionRepositoryProvider)
-          .updateFinding(
-            finding.copyWith(
-              status: finding.status == FindingStatus.open
-                  ? FindingStatus.resolved
-                  : FindingStatus.open,
+      final result = await inspectionRepo.updateFinding(
+        finding.copyWith(
+          status: finding.status == FindingStatus.open
+              ? FindingStatus.resolved
+              : FindingStatus.open,
+        ),
+      );
+      if (!result.isSuccess) {
+        messenger?.showSnackBar(
+          SnackBar(
+            content: Text(
+              result.when(success: (_) => '', failure: (f) => f.message),
             ),
-          );
-      ref.invalidateInspection(inspection.id);
+          ),
+        );
+      }
+      if (context.mounted) ref.invalidateInspection(inspection.id);
     }
 
     Widget block(String title, String? body) => body == null

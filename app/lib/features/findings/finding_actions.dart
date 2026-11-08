@@ -6,6 +6,7 @@ import '../../app/providers/inspection_providers.dart';
 import '../../app/providers/repository_providers.dart';
 import '../../data/models/finding.dart';
 import '../../data/models/inspection.dart';
+import '../../data/repositories/evidence_repository.dart';
 import '../checklist/widgets/finding_form_sheet.dart';
 import 'widgets/photo_capture.dart';
 
@@ -47,19 +48,45 @@ Future<bool> addFindingFlow(
     if (context.mounted) _showError(context, 'Could not save the finding.');
     return false;
   }
-  for (final photo in draft.photos) {
-    await ref
-        .read(evidenceRepositoryProvider)
-        .attach(
-          inspectionId: inspection.id,
-          findingId: saved.id,
-          localFilePath: photo.path,
-          latitude: photo.latitude,
-          longitude: photo.longitude,
-        );
-  }
+  final failed = await attachPhotos(
+    ref.read(evidenceRepositoryProvider),
+    inspectionId: inspection.id,
+    findingId: saved.id,
+    photos: draft.photos,
+  );
   ref.invalidateInspection(inspection.id);
+  if (failed > 0 && context.mounted) {
+    _showError(
+      context,
+      'Finding saved, but $failed of ${draft.photos.length} photos could not '
+      'be uploaded. Add them again from the finding.',
+    );
+  }
   return true;
+}
+
+/// Uploads [photos] one by one and returns how many failed, so callers can
+/// tell the inspector instead of silently dropping evidence (QC-012).
+Future<int> attachPhotos(
+  EvidenceRepository repo, {
+  required String inspectionId,
+  String? findingId,
+  String? itemId,
+  required List<CapturedPhoto> photos,
+}) async {
+  var failed = 0;
+  for (final photo in photos) {
+    final result = await repo.attach(
+      inspectionId: inspectionId,
+      inspectionItemId: itemId,
+      findingId: findingId,
+      localFilePath: photo.path,
+      latitude: photo.latitude,
+      longitude: photo.longitude,
+    );
+    if (!result.isSuccess) failed++;
+  }
+  return failed;
 }
 
 Future<void> addItemPhotoFlow(
