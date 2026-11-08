@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Inspectly — Demo mode (no backend)",
+      "cwd": "app",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "Inspectly — Local API (MySQL, Android emulator)",
+      "cwd": "app",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define=INSPECTLY_USE_API=true",
+        "--dart-define=INSPECTLY_API_BASE_URL=http://10.0.2.2:8000/api",
+        "--dart-define=INSPECTLY_DEMO_LOGIN=true"
+      ]
+    }
+  ]
+}
