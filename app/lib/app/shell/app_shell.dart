@@ -149,12 +149,23 @@ class _NavItem extends StatelessWidget {
           children: [
             Icon(icon, size: 24, color: color),
             const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                color: color,
+            // One line that shrinks with large system fonts instead of
+            // wrapping ("Inspectio/ns") and overflowing the 64px bar.
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                      color: color,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

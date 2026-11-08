@@ -143,11 +143,15 @@ class _EvidenceViewState extends State<EvidenceView> {
                             color: p.textMuted,
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            'GPS at start ${inspection.locationLat!.toStringAsFixed(5)}, ${inspection.locationLng!.toStringAsFixed(5)}',
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              color: p.textMuted,
+                          Flexible(
+                            child: Text(
+                              'GPS at start ${inspection.locationLat!.toStringAsFixed(5)}, ${inspection.locationLng!.toStringAsFixed(5)}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12.5,
+                                color: p.textMuted,
+                              ),
                             ),
                           ),
                         ],

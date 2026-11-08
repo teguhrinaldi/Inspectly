@@ -216,7 +216,9 @@ class _HeroCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(18),
         child: SizedBox(
-          height: 168,
+          // 168 at normal text size; grows with large system fonts so the
+          // title, subtitle and action row never overflow the card.
+          height: 168 + MediaQuery.textScalerOf(context).scale(60) - 60,
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -272,6 +274,8 @@ class _HeroCard extends StatelessWidget {
                               ),
                             ],
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.78),
                             fontSize: 13.5,
