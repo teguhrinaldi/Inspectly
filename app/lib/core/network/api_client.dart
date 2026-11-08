@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../errors/failure.dart';
 import '../storage/token_storage.dart';
@@ -81,6 +82,16 @@ class ApiClient {
       return await request();
     } on DioException catch (e) {
       throw _mapError(e);
+    } on Failure {
+      rethrow;
+    } catch (e, st) {
+      // A response that doesn't match the models (missing/null field,
+      // unexpected shape) must reach the UI as a readable failure instead
+      // of escaping the repositories' `on Failure` handlers.
+      debugPrint('ApiClient: unexpected response: $e\n$st');
+      throw const UnknownFailure(
+        'The server sent data the app could not read. Please try again.',
+      );
     }
   }
 

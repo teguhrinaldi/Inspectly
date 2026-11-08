@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Evidence {
 
- String get id; String get inspectionId; String? get inspectionItemId; String? get findingId; String get filePath; String? get watermarkedPath; String? get fileUrl; double? get latitude; double? get longitude; DateTime get capturedAt;
+ String get id; String get inspectionId; String? get inspectionItemId; String? get findingId; String get filePath; String? get watermarkedPath; String? get fileUrl; double? get latitude; double? get longitude; DateTime? get capturedAt;
 /// Create a copy of Evidence
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $EvidenceCopyWith<$Res>  {
   factory $EvidenceCopyWith(Evidence value, $Res Function(Evidence) _then) = _$EvidenceCopyWithImpl;
 @useResult
 $Res call({
- String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, DateTime capturedAt
+ String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, DateTime? capturedAt
 });
 
 
@@ -71,7 +71,7 @@ class _$EvidenceCopyWithImpl<$Res>
 
 /// Create a copy of Evidence
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? capturedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? capturedAt = freezed,}) {
   return _then(Evidence(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,inspectionId: null == inspectionId ? _self.inspectionId : inspectionId // ignore: cast_nullable_to_non_nullable
@@ -82,8 +82,8 @@ as String,watermarkedPath: freezed == watermarkedPath ? _self.watermarkedPath : 
 as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,capturedAt: null == capturedAt ? _self.capturedAt : capturedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as double?,capturedAt: freezed == capturedAt ? _self.capturedAt : capturedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -168,7 +168,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime capturedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime? capturedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Evidence() when $default != null:
 return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.capturedAt);case _:
@@ -189,7 +189,7 @@ return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.finding
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime capturedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime? capturedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Evidence():
 return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.capturedAt);case _:
@@ -209,7 +209,7 @@ return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.finding
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime capturedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime? capturedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Evidence() when $default != null:
 return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.capturedAt);case _:
@@ -224,7 +224,7 @@ return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.finding
 @JsonSerializable()
 
 class _Evidence implements Evidence {
-  const _Evidence({required this.id, required this.inspectionId, this.inspectionItemId, this.findingId, required this.filePath, this.watermarkedPath, this.fileUrl, this.latitude, this.longitude, required this.capturedAt});
+  const _Evidence({required this.id, required this.inspectionId, this.inspectionItemId, this.findingId, required this.filePath, this.watermarkedPath, this.fileUrl, this.latitude, this.longitude, this.capturedAt});
   factory _Evidence.fromJson(Map<String, dynamic> json) => _$EvidenceFromJson(json);
 
 @override final  String id;
@@ -236,7 +236,7 @@ class _Evidence implements Evidence {
 @override final  String? fileUrl;
 @override final  double? latitude;
 @override final  double? longitude;
-@override final  DateTime capturedAt;
+@override final  DateTime? capturedAt;
 
 /// Create a copy of Evidence
 /// with the given fields replaced by the non-null parameter values.
@@ -273,7 +273,7 @@ abstract mixin class _$EvidenceCopyWith<$Res> implements $EvidenceCopyWith<$Res>
   factory _$EvidenceCopyWith(_Evidence value, $Res Function(_Evidence) _then) = __$EvidenceCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, DateTime capturedAt
+ String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, DateTime? capturedAt
 });
 
 
@@ -290,7 +290,7 @@ class __$EvidenceCopyWithImpl<$Res>
 
 /// Create a copy of Evidence
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? capturedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? capturedAt = freezed,}) {
   return _then(_Evidence(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,inspectionId: null == inspectionId ? _self.inspectionId : inspectionId // ignore: cast_nullable_to_non_nullable
@@ -301,8 +301,8 @@ as String,watermarkedPath: freezed == watermarkedPath ? _self.watermarkedPath : 
 as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,capturedAt: null == capturedAt ? _self.capturedAt : capturedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as double?,capturedAt: freezed == capturedAt ? _self.capturedAt : capturedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

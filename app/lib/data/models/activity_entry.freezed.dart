@@ -220,13 +220,13 @@ return $default(_that.id,_that.inspectionId,_that.type,_that.description,_that.a
 @JsonSerializable()
 
 class _ActivityEntry implements ActivityEntry {
-  const _ActivityEntry({required this.id, required this.inspectionId, required this.type, required this.description, this.actorName, required this.occurredAt});
+  const _ActivityEntry({required this.id, required this.inspectionId, required this.type, this.description = '', this.actorName, required this.occurredAt});
   factory _ActivityEntry.fromJson(Map<String, dynamic> json) => _$ActivityEntryFromJson(json);
 
 @override final  String id;
 @override final  String inspectionId;
 @override final  ActivityType type;
-@override final  String description;
+@override@JsonKey() final  String description;
 @override final  String? actorName;
 @override final  DateTime occurredAt;
 

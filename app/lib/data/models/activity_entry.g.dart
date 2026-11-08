@@ -11,7 +11,7 @@ _ActivityEntry _$ActivityEntryFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       inspectionId: json['inspection_id'] as String,
       type: $enumDecode(_$ActivityTypeEnumMap, json['type']),
-      description: json['description'] as String,
+      description: json['description'] as String? ?? '',
       actorName: json['actor_name'] as String?,
       occurredAt: DateTime.parse(json['occurred_at'] as String),
     );

@@ -11,7 +11,8 @@ abstract class InspectionItem with _$InspectionItem {
   const factory InspectionItem({
     required String id,
     required String inspectionId,
-    required String templateChecklistItemId,
+    // Null on the server once the item was removed from its template.
+    @Default('') String templateChecklistItemId,
     required String label,
     String? helpText,
     ChecklistResult? result,

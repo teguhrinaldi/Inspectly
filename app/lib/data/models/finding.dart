@@ -13,7 +13,8 @@ abstract class Finding with _$Finding {
     required String inspectionId,
     String? inspectionItemId,
     required String title,
-    required String description,
+    // Nullable on the server (e.g. cleared in the admin panel).
+    @Default('') String description,
     required FindingSeverity severity,
     String? recommendation,
     String? location,

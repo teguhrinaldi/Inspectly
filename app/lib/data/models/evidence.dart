@@ -15,7 +15,7 @@ abstract class Evidence with _$Evidence {
     String? fileUrl,
     double? latitude,
     double? longitude,
-    required DateTime capturedAt,
+    DateTime? capturedAt,
   }) = _Evidence;
 
   factory Evidence.fromJson(Map<String, dynamic> json) =>

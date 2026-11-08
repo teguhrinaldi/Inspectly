@@ -223,12 +223,12 @@ return $default(_that.id,_that.inspectionId,_that.templateChecklistItemId,_that.
 @JsonSerializable()
 
 class _InspectionItem implements InspectionItem {
-  const _InspectionItem({required this.id, required this.inspectionId, required this.templateChecklistItemId, required this.label, this.helpText, this.result, this.note, this.sortOrder = 0,  List<Evidence> evidence = const <Evidence>[]}): _evidence = evidence;
+  const _InspectionItem({required this.id, required this.inspectionId, this.templateChecklistItemId = '', required this.label, this.helpText, this.result, this.note, this.sortOrder = 0,  List<Evidence> evidence = const <Evidence>[]}): _evidence = evidence;
   factory _InspectionItem.fromJson(Map<String, dynamic> json) => _$InspectionItemFromJson(json);
 
 @override final  String id;
 @override final  String inspectionId;
-@override final  String templateChecklistItemId;
+@override@JsonKey() final  String templateChecklistItemId;
 @override final  String label;
 @override final  String? helpText;
 @override final  ChecklistResult? result;

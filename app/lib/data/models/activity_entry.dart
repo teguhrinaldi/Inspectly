@@ -11,7 +11,7 @@ abstract class ActivityEntry with _$ActivityEntry {
     required String id,
     required String inspectionId,
     required ActivityType type,
-    required String description,
+    @Default('') String description,
     String? actorName,
     required DateTime occurredAt,
   }) = _ActivityEntry;

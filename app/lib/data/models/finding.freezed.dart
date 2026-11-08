@@ -224,14 +224,14 @@ return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.title,_
 @JsonSerializable()
 
 class _Finding implements Finding {
-  const _Finding({required this.id, required this.inspectionId, this.inspectionItemId, required this.title, required this.description, required this.severity, this.recommendation, this.location, this.status = FindingStatus.open,  List<Evidence> evidence = const <Evidence>[]}): _evidence = evidence;
+  const _Finding({required this.id, required this.inspectionId, this.inspectionItemId, required this.title, this.description = '', required this.severity, this.recommendation, this.location, this.status = FindingStatus.open,  List<Evidence> evidence = const <Evidence>[]}): _evidence = evidence;
   factory _Finding.fromJson(Map<String, dynamic> json) => _$FindingFromJson(json);
 
 @override final  String id;
 @override final  String inspectionId;
 @override final  String? inspectionItemId;
 @override final  String title;
-@override final  String description;
+@override@JsonKey() final  String description;
 @override final  FindingSeverity severity;
 @override final  String? recommendation;
 @override final  String? location;

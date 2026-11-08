@@ -11,7 +11,7 @@ _Finding _$FindingFromJson(Map<String, dynamic> json) => _Finding(
   inspectionId: json['inspection_id'] as String,
   inspectionItemId: json['inspection_item_id'] as String?,
   title: json['title'] as String,
-  description: json['description'] as String,
+  description: json['description'] as String? ?? '',
   severity: $enumDecode(_$FindingSeverityEnumMap, json['severity']),
   recommendation: json['recommendation'] as String?,
   location: json['location'] as String?,

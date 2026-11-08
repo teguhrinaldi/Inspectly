@@ -10,7 +10,8 @@ _InspectionItem _$InspectionItemFromJson(Map<String, dynamic> json) =>
     _InspectionItem(
       id: json['id'] as String,
       inspectionId: json['inspection_id'] as String,
-      templateChecklistItemId: json['template_checklist_item_id'] as String,
+      templateChecklistItemId:
+          json['template_checklist_item_id'] as String? ?? '',
       label: json['label'] as String,
       helpText: json['help_text'] as String?,
       result: $enumDecodeNullable(_$ChecklistResultEnumMap, json['result']),
