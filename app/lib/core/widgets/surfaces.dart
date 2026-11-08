@@ -194,8 +194,9 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    // Scrolls when squeezed (keyboard open, phone landscape, large text).
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -258,4 +259,23 @@ class InlineError extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Lays [child] (typically a Column with a Spacer) out at least as tall as
+/// the available space, and lets it scroll when the space is too short
+/// (phone landscape, large text) instead of overflowing.
+class FillOrScroll extends StatelessWidget {
+  const FillOrScroll({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, box) => SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: box.maxHeight),
+        child: IntrinsicHeight(child: child),
+      ),
+    ),
+  );
 }

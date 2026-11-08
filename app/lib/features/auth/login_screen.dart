@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -138,9 +140,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           child: Column(
                             children: [
                               SizedBox(
-                                height:
-                                    heroHeight -
-                                    MediaQuery.paddingOf(context).top,
+                                height: math.max(
+                                  0,
+                                  heroHeight -
+                                      MediaQuery.paddingOf(context).top,
+                                ),
                                 child: Stack(
                                   children: [
                                     Align(
@@ -156,31 +160,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                             : context.go('/welcome'),
                                       ),
                                     ),
+                                    // Shrinks instead of overflowing when the
+                                    // hero is short (keyboard open, landscape,
+                                    // large text).
                                     Center(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const InspectlyLogo(
-                                            size: 56,
-                                            color: Colors.white,
-                                          ),
-                                          const SizedBox(height: 12),
-                                          const InspectlyWordmark(
-                                            fontSize: 36,
-                                            color: Colors.white,
-                                          ),
-                                          const SizedBox(height: 6),
-                                          Text(
-                                            'Inspect. Document. Report.',
-                                            style: TextStyle(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.92,
-                                              ),
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500,
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const InspectlyLogo(
+                                              size: 56,
+                                              color: Colors.white,
                                             ),
-                                          ),
-                                        ],
+                                            const SizedBox(height: 12),
+                                            const InspectlyWordmark(
+                                              fontSize: 36,
+                                              color: Colors.white,
+                                            ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              'Inspect. Document. Report.',
+                                              style: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.92,
+                                                ),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
