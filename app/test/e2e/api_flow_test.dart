@@ -5,8 +5,9 @@
 //   INSPECTLY_E2E_URL=http://127.0.0.1:8765/api flutter test test/e2e
 //
 // Runs the main inspector journey: login → data → create & start →
-// checklist → finding + photo → both signatures → complete → logout →
-// login again. It creates data, so never point it at production.
+// checklist → finding + photo → both signatures → required item photos →
+// complete → logout → login again. It creates data, so never point it at
+// production.
 @TestOn('vm')
 library;
 
@@ -17,6 +18,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:inspectly/core/errors/failure.dart';
 import 'package:inspectly/core/network/api_client.dart';
 import 'package:inspectly/core/storage/token_storage.dart';
+import 'package:inspectly/core/utils/completion_rules.dart';
 import 'package:inspectly/core/utils/result.dart';
 import 'package:inspectly/data/models/enums.dart';
 import 'package:inspectly/data/models/finding.dart';
@@ -181,6 +183,45 @@ void main() {
           ),
           'signature ${type.name}',
         );
+      }
+      // Items whose template asks for photo evidence need a photo before
+      // the inspection can be completed (QC-036). The app's rule must name
+      // the same items the server refuses.
+      final fullTemplate = ok(await templates.getById(template.id), 'template');
+      final beforePhotos = ok(await inspections.getById(created.id), 'reload');
+      final needPhotos = itemsMissingEvidence(beforePhotos, fullTemplate);
+      if (needPhotos.isNotEmpty) {
+        final refused = await inspections.complete(created.id);
+        refused.when(
+          success: (_) => fail('complete without required photos must fail'),
+          failure: (f) {
+            expect(f, isA<ValidationFailure>());
+            for (final label in needPhotos) {
+              expect(f.message, contains(label));
+            }
+          },
+        );
+        final requiredIds = {
+          for (final s in fullTemplate.sections)
+            for (final i in s.items)
+              if (i.requiresEvidence) i.id,
+        };
+        for (final item in beforePhotos.items) {
+          if (!requiredIds.contains(item.templateChecklistItemId) ||
+              item.id == started.items.first.id) {
+            continue; // the first item already has a photo on its finding
+          }
+          ok(
+            await evidence.attach(
+              inspectionId: created.id,
+              inspectionItemId: item.id,
+              localFilePath: photo.path,
+              latitude: -6.2,
+              longitude: 106.8,
+            ),
+            'item photo ${item.label}',
+          );
+        }
       }
       final done = ok(await inspections.complete(created.id), 'complete');
       expect(done.status, InspectionStatus.completed);
