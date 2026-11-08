@@ -190,42 +190,41 @@ Setiap fase akan diverifikasi dengan `flutter analyze`, `flutter test`, `php art
 
 ---
 
-## 7. Hasil perbaikan (branch `qc/full-audit`, 2026-11-08)
+## 7. Hasil perbaikan (branch `qc/full-audit` + `upgrade/laravel-12`, 2026-11-08)
 
 | Status | Critical | High | Medium | Low | Total |
 |---|---|---|---|---|---|
-| Fixed | – | 15 | 21 | 5 | **41** |
-| Sebagian (fix + sisa keputusan/cek manual) | 1 | 2 | 4 | 3 | **10** |
-| Won't Fix (tidak terbukti / di luar cakupan rilis) | – | 1 | 3 | 3 | **7** |
-| Butuh Keputusan | 1 | – | 3 | 1 | **5** |
+| Fixed | 2 | 17 | 26 | 8 | **53** |
+| Sebagian (fix + sisa cek manual) | – | – | 3 | 2 | **5** |
+| Won't Fix / Lewati / Di luar cakupan | – | 1 | 2 | 2 | **5** |
+| Butuh Keputusan | – | – | – | – | **0** |
 
 Catatan penting: beberapa temuan audit **tidak terbukti** saat diuji (QC-018 status bar; sebagian QC-013, QC-017, QC-032, QC-038). Temuan layout kini berdasarkan bukti dari matriks test, bukan estimasi. Satu temuan baru (QC-063) ditemukan saat verifikasi E2E.
 
-### Keputusan yang dibutuhkan
-1. **QC-001**: batasi aksi tulis (start/checklist/finding/foto/signature/complete) ke inspector pemilik + admin?
-2. **QC-002**: upgrade Laravel 10 → 12/13 + Sanctum 4 + Filament (restyle admin diverifikasi ulang).
-3. **QC-003**: masa berlaku token (saat ini tanpa batas).
-4. **QC-007/036**: boleh complete langsung dari scheduled? wajib foto untuk item `requires_evidence`? minimal goresan tanda tangan?
-5. **QC-019**: applicationId final & label launcher; buat upload keystore + `android/key.properties`.
-6. **QC-020**: tanggal demo di-anchor ke hari ini (riwayat tidak lagi "27 Sep" seperti mockup)?
-7. **QC-022**: kebijakan password (min 6 → 8+?).
-8. **QC-026**: status `review` — tambah aksi "Submit for review" atau hapus?
-9. **QC-031**: back di tab non-Home → Home? dialog "Buang perubahan?" untuk tanda tangan/form finding?
-10. **QC-043**: lokasi terakhir (cepat) vs GPS akurat ≤10 dtk per foto.
-11. **QC-047**: antrean sinkronisasi offline untuk API mode.
-12. **QC-051/053/059/062**: CORS ke domain admin; GET /reports mencatat activity; warna badge In Progress; Fail→Pass meninggalkan finding open.
+### Keputusan pemilik (sudah diambil dan dikerjakan)
+1. **QC-001**: aksi tulis hanya untuk inspector yang ditugaskan + admin (policy `write`; app menampilkan "View only").
+2. **QC-002**: upgrade langsung Laravel 10 → 12 (semua rilis Laravel 11 diblokir advisory EOL); PHP ^8.3, Sanctum 4, Filament 3.3.57. Branch `upgrade/laravel-12`.
+3. **QC-003**: token berlaku 30 hari (`SANCTUM_EXPIRATION`), dibersihkan harian oleh scheduler.
+4. **QC-007/036**: complete hanya dari in_progress; foto wajib untuk item `requires_evidence`; tanda tangan minimal 150 px goresan.
+5. **QC-019**: applicationId `com.teguhrinaldi.inspectly`, label "Inspectly"; keystore dibuat sendiri oleh pemilik.
+6. **QC-020**: tanggal demo di-anchor ke hari ini.
+7. **QC-022**: password minimal 8 karakter.
+8. **QC-026**: status `review` dihapus (data lama → in_progress); KPI "Needs Review" diganti "Open Findings".
+9. **QC-031**: back di tab non-Home → Home; dialog "Discard changes?" di tanda tangan & form finding.
+10. **QC-043**: GPS presisi maks 3 detik, lalu lokasi terakhir; akurasi disimpan.
+11. **QC-047**: di luar cakupan. **QC-051**: dilewati. **QC-053/059/062**: dikerjakan.
 
-### Verifikasi akhir (dari nol)
+### Verifikasi akhir (branch `upgrade/laravel-12`)
 | Langkah | Hasil |
 |---|---|
-| `flutter clean` → `pub get` → `analyze` | No issues |
-| `dart format --set-exit-if-changed lib test tool` | 0 berubah |
-| `flutter test` | **98 lulus**, 1 skip (E2E API butuh `INSPECTLY_E2E_URL`) — termasuk matriks layout 36 kombinasi |
-| `flutter build apk --release` | OK, 83,4 MB (sebelumnya 88 MB) — **masih debug-signed** sampai `key.properties` dibuat |
-| `composer install` / `pint --test` | OK / PASS 185 file |
-| `php artisan test` | **63 lulus** (awal: 34 lulus, 1 gagal) |
-| `migrate:fresh --seed` (SQLite) | OK, 48 inspeksi / 4 user. **MySQL belum diuji** |
-| E2E API nyata (`test/e2e/api_flow_test.dart` vs `php artisan serve`) | Lulus: login, admin ditolak, list semua halaman, QR, create, start, 422 complete dini, checklist, finding, upload foto, 2 tanda tangan, complete (idempoten), 409 restart, history/comparison/activity, logout, login ulang |
-| E2E UI Demo (`test/e2e/demo_ui_flow_test.dart`) | Lulus: login form → detail → logout → login ulang |
-| Sisa debug | Tidak ada `print`/`dd`/`dump`/`console.log`; 1 TODO (applicationId, QC-019); kredensial hanya akun demo yang dibatasi Demo Mode |
+| `flutter analyze` | No issues |
+| `flutter test` | **112 lulus**, 1 skip (E2E API butuh `INSPECTLY_E2E_URL`) — termasuk matriks layout |
+| `flutter build apk --release` | OK, 83,5 MB, package `com.teguhrinaldi.inspectly` — **masih debug-signed** sampai `key.properties` dibuat |
+| Versi backend | Laravel 12.71.0, PHP 8.3, Sanctum 4.3.3, Filament 3.3.57, Livewire 3.8.11, Carbon 3, PHPUnit 11.5 |
+| `composer audit` | **Tidak ada advisory** (awal: 15 advisory, Composer menolak resolve) |
+| `php artisan test` | **87 lulus**, 348 assertion (awal: 34 lulus, 1 gagal) |
+| `pint --test` / Larastan level 5 | PASS / No errors (baseline 172 temuan tipe) |
+| `migrate:fresh --seed` (SQLite) + rollback/migrate ulang | OK, 48 inspeksi. **MySQL belum diuji** |
+| E2E API nyata (`test/e2e/api_flow_test.dart` vs `php artisan serve` Laravel 12) | Lulus: login, admin ditolak, list, QR, create, start, 422 complete dini, checklist, finding + foto, 2 tanda tangan, 422 tanpa foto wajib → foto item → complete (idempoten), 409 restart, history/comparison/activity, logout, login ulang |
+| Halaman Filament (12 halaman, server lokal) | Semua 200, tanpa error console; dashboard/list/editor template tampil utuh. Tetap perlu cek visual pemilik |
 | iOS / web | Tidak dibangun (Windows; app hanya menargetkan mobile) |
