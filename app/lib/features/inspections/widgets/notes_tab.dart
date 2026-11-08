@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../app/providers/repository_providers.dart';
+import '../../../app/providers/inspection_providers.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../core/widgets/surfaces.dart';
 import '../../../data/models/activity_entry.dart';
@@ -22,10 +22,29 @@ class NotesView extends ConsumerWidget {
         .where((i) => i.note != null && i.note!.isNotEmpty)
         .toList();
 
-    return FutureBuilder(
-      future: ref.read(inspectionRepositoryProvider).activities(inspection.id),
-      builder: (context, snapshot) {
-        final activities = snapshot.data?.dataOrNull ?? const <ActivityEntry>[];
+    final activitiesAsync = ref.watch(
+      inspectionActivitiesProvider(inspection.id),
+    );
+    final activities = activitiesAsync.value ?? const <ActivityEntry>[];
+    final loadingActivity =
+        activitiesAsync.isLoading && !activitiesAsync.hasValue;
+    return Builder(
+      builder: (context) {
+        if (loadingActivity && notedItems.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (activitiesAsync.hasError && !activitiesAsync.hasValue) {
+          return SurfaceCard(
+            child: InlineError(
+              message: 'Could not load the activity log.',
+              onRetry: () =>
+                  ref.invalidate(inspectionActivitiesProvider(inspection.id)),
+            ),
+          );
+        }
         if (notedItems.isEmpty && activities.isEmpty) {
           return SurfaceCard(
             child: Text(

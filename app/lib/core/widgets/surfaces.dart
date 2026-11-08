@@ -226,3 +226,36 @@ class EmptyState extends StatelessWidget {
     );
   }
 }
+
+/// "Try again" action for error states (QC-011).
+class RetryButton extends StatelessWidget {
+  const RetryButton({super.key, required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) =>
+      OutlinedButton(onPressed: onPressed, child: const Text('Try again'));
+}
+
+/// Compact error line with a retry action, for sections inside a screen.
+class InlineError extends StatelessWidget {
+  const InlineError({super.key, required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 12,
+      runSpacing: 4,
+      children: [
+        Text(message, style: TextStyle(color: p.textSecondary)),
+        TextButton(onPressed: onRetry, child: const Text('Try again')),
+      ],
+    );
+  }
+}

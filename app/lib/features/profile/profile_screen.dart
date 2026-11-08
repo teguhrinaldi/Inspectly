@@ -24,15 +24,12 @@ class ProfileScreen extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     if (authState is! AuthLoggedIn) return const SizedBox.shrink();
     final user = authState.user;
-    final mine =
-        ref
-            .watch(
-              inspectionListProvider(
-                InspectionListFilter(inspectorId: user.id),
-              ),
-            )
-            .value ??
-        const [];
+    final mineAsync = ref.watch(
+      inspectionListProvider(InspectionListFilter(inspectorId: user.id)),
+    );
+    final mine = mineAsync.value ?? const [];
+    // Until the counts are known (loading/failed) show a dash, not "0".
+    String count(int n) => mineAsync.hasValue ? '$n' : '—';
     final completed = mine
         .where((i) => i.status == InspectionStatus.completed)
         .length;
@@ -124,10 +121,10 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  _Stat(value: '$active', label: 'Active', tone: Tone.blue),
+                  _Stat(value: count(active), label: 'Active', tone: Tone.blue),
                   const SizedBox(width: 10),
                   _Stat(
-                    value: '$completed',
+                    value: count(completed),
                     label: 'Completed',
                     tone: Tone.green,
                   ),

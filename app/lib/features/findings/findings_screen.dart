@@ -31,6 +31,10 @@ class FindingsScreen extends ConsumerWidget {
           icon: LucideIcons.cloudOff,
           title: 'Could not load findings',
           message: userMessage(e),
+          action: RetryButton(
+            onPressed: () =>
+                ref.invalidate(inspectionByIdProvider(inspectionId)),
+          ),
         ),
         data: (inspection) =>
             ResponsiveContent(child: FindingsView(inspection: inspection)),

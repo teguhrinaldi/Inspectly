@@ -35,6 +35,9 @@ class ReportsScreen extends ConsumerWidget {
               icon: LucideIcons.cloudOff,
               title: 'Could not load reports',
               message: userMessage(e),
+              action: RetryButton(
+                onPressed: () => ref.invalidate(inspectionListProvider),
+              ),
             ),
             data: (list) {
               final reports = [...list]

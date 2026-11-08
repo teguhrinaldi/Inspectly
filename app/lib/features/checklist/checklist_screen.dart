@@ -40,6 +40,10 @@ class ChecklistScreen extends ConsumerWidget {
           icon: LucideIcons.cloudOff,
           title: 'Could not load checklist',
           message: userMessage(err),
+          action: RetryButton(
+            onPressed: () =>
+                ref.invalidate(inspectionByIdProvider(inspectionId)),
+          ),
         ),
         data: (inspection) => inspection.items.isEmpty
             ? const EmptyState(

@@ -143,6 +143,9 @@ class _InspectionListScreenState extends ConsumerState<InspectionListScreen> {
                     icon: LucideIcons.cloudOff,
                     title: 'Could not load inspections',
                     message: userMessage(err),
+                    action: RetryButton(
+                      onPressed: () => ref.invalidate(inspectionListProvider),
+                    ),
                   ),
                   data: (items) {
                     if (items.isEmpty) {

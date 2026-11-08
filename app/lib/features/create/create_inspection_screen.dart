@@ -192,60 +192,70 @@ class _CreateInspectionScreenState
               const SizedBox(height: 10),
               sitesAsync.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text(
-                  'Could not load sites.',
-                  style: TextStyle(color: p.textSecondary),
+                error: (e, _) => InlineError(
+                  message: 'Could not load sites.',
+                  onRetry: () => ref.invalidate(siteListProvider),
                 ),
-                data: (list) => Column(
-                  children: [
-                    for (final s in list) ...[
-                      _SelectRow(
-                        selected: _siteId == s.id,
-                        onTap: () => setState(() => _siteId = s.id),
-                        leading: ClipOval(
-                          child: SizedBox.square(
-                            dimension: 42,
-                            child: AppImage(
-                              s.coverImageUrl,
-                              placeholderIcon: LucideIcons.building2,
+                data: (list) => list.isEmpty
+                    ? Text(
+                        'No sites yet. Ask your admin to add one.',
+                        style: TextStyle(color: p.textSecondary),
+                      )
+                    : Column(
+                        children: [
+                          for (final s in list) ...[
+                            _SelectRow(
+                              selected: _siteId == s.id,
+                              onTap: () => setState(() => _siteId = s.id),
+                              leading: ClipOval(
+                                child: SizedBox.square(
+                                  dimension: 42,
+                                  child: AppImage(
+                                    s.coverImageUrl,
+                                    placeholderIcon: LucideIcons.building2,
+                                  ),
+                                ),
+                              ),
+                              title: s.name,
+                              subtitle: s.customerName ?? s.address ?? '',
                             ),
-                          ),
-                        ),
-                        title: s.name,
-                        subtitle: s.customerName ?? s.address ?? '',
+                            const SizedBox(height: 8),
+                          ],
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                    ],
-                  ],
-                ),
               ),
               const SizedBox(height: 16),
               SectionTitle('Template', key: _templatesKey),
               const SizedBox(height: 10),
               templatesAsync.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Text(
-                  'Could not load templates.',
-                  style: TextStyle(color: p.textSecondary),
+                error: (e, _) => InlineError(
+                  message: 'Could not load templates.',
+                  onRetry: () => ref.invalidate(templateListProvider),
                 ),
-                data: (list) => Column(
-                  children: [
-                    for (final t in list) ...[
-                      _SelectRow(
-                        selected: _templateId == t.id,
-                        onTap: () => setState(() => _templateId = t.id),
-                        leading: IconTile(
-                          icon: templateIcon(t),
-                          tone: Tone.blue,
-                          size: 42,
-                        ),
-                        title: t.name,
-                        subtitle: templateCounts(t),
+                data: (list) => list.isEmpty
+                    ? Text(
+                        'No active templates yet. Ask your admin to add one.',
+                        style: TextStyle(color: p.textSecondary),
+                      )
+                    : Column(
+                        children: [
+                          for (final t in list) ...[
+                            _SelectRow(
+                              selected: _templateId == t.id,
+                              onTap: () => setState(() => _templateId = t.id),
+                              leading: IconTile(
+                                icon: templateIcon(t),
+                                tone: Tone.blue,
+                                size: 42,
+                              ),
+                              title: t.name,
+                              subtitle: templateCounts(t),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                    ],
-                  ],
-                ),
               ),
               const SizedBox(height: 16),
               const SectionTitle('When'),

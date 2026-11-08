@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/models/activity_entry.dart';
 import '../../data/models/inspection.dart';
 import '../../data/repositories/inspection_repository.dart';
 import 'repository_providers.dart';
@@ -23,6 +24,16 @@ final inspectionByIdProvider = FutureProvider.family<Inspection, String>((
   return result.when(success: (data) => data, failure: (f) => throw f);
 });
 
+/// Activity timeline of one inspection (Notes tab). A provider rather than a
+/// FutureBuilder so it isn't refetched on every rebuild and has real
+/// loading/error states.
+final inspectionActivitiesProvider =
+    FutureProvider.family<List<ActivityEntry>, String>((ref, id) async {
+      final repo = ref.watch(inspectionRepositoryProvider);
+      final result = await repo.activities(id);
+      return result.when(success: (data) => data, failure: (f) => throw f);
+    });
+
 /// Every screen that mutates an inspection (start/checklist/finding/
 /// signature/complete) must invalidate BOTH of these — the detail view reads
 /// `inspectionByIdProvider`, but list/dashboard cards read
@@ -35,5 +46,6 @@ extension InvalidateInspectionOnWidgetRef on WidgetRef {
   void invalidateInspection(String id) {
     invalidate(inspectionByIdProvider(id));
     invalidate(inspectionListProvider);
+    invalidate(inspectionActivitiesProvider(id));
   }
 }

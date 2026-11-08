@@ -38,6 +38,10 @@ class RiskSummaryScreen extends ConsumerWidget {
           icon: LucideIcons.cloudOff,
           title: 'Could not load summary',
           message: userMessage(e),
+          action: RetryButton(
+            onPressed: () =>
+                ref.invalidate(inspectionByIdProvider(inspectionId)),
+          ),
         ),
         data: (i) => ResponsiveContent(child: _SummaryBody(inspection: i)),
       ),

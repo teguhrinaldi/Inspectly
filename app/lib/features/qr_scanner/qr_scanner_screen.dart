@@ -14,6 +14,7 @@ import '../../data/models/enums.dart';
 import '../../data/models/inspection_template.dart';
 import '../../data/models/site.dart';
 import '../../data/services/location_service.dart';
+import '../../core/widgets/surfaces.dart';
 
 /// The QR encodes a stable site identifier (`INSPECTLY:SITE:<SLUG>-<NUM>`),
 /// never a URL — scanning only ever looks up a Site.
@@ -367,9 +368,9 @@ class _BottomPanel extends ConsumerWidget {
                   padding: EdgeInsets.all(12),
                   child: Center(child: CircularProgressIndicator()),
                 ),
-                error: (e, _) => Text(
-                  'Could not load templates.',
-                  style: TextStyle(color: p.textSecondary),
+                error: (e, _) => InlineError(
+                  message: 'Could not load templates.',
+                  onRetry: () => ref.invalidate(templateListProvider),
                 ),
                 data: (list) => ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 190),

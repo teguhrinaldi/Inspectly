@@ -24,6 +24,10 @@ class ReportScreen extends ConsumerWidget {
           icon: LucideIcons.cloudOff,
           title: 'Could not load report',
           message: userMessage(e),
+          action: RetryButton(
+            onPressed: () =>
+                ref.invalidate(inspectionByIdProvider(inspectionId)),
+          ),
         ),
         data: (inspection) => PdfPreview(
           build: (format) => PdfReportService().generate(inspection),

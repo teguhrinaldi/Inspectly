@@ -40,6 +40,10 @@ class SignatureScreen extends ConsumerWidget {
           icon: LucideIcons.cloudOff,
           title: 'Could not load inspection',
           message: userMessage(e),
+          action: RetryButton(
+            onPressed: () =>
+                ref.invalidate(inspectionByIdProvider(inspectionId)),
+          ),
         ),
         data: (inspection) => _SignatureBody(inspection: inspection),
       ),

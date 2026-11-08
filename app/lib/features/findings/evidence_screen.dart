@@ -28,6 +28,10 @@ class EvidenceScreen extends ConsumerWidget {
           icon: LucideIcons.cloudOff,
           title: 'Could not load evidence',
           message: userMessage(e),
+          action: RetryButton(
+            onPressed: () =>
+                ref.invalidate(inspectionByIdProvider(inspectionId)),
+          ),
         ),
         data: (inspection) => ResponsiveContent(
           child: ListView(

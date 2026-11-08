@@ -44,6 +44,10 @@ class ComparisonScreen extends ConsumerWidget {
           icon: LucideIcons.cloudOff,
           title: 'Could not load inspection',
           message: userMessage(e),
+          action: RetryButton(
+            onPressed: () =>
+                ref.invalidate(inspectionByIdProvider(inspectionId)),
+          ),
         ),
         data: (current) => ResponsiveContent(child: _Body(current: current)),
       ),
@@ -92,9 +96,9 @@ class _BodyState extends ConsumerState<_Body> {
             child: Center(child: CircularProgressIndicator()),
           ),
           error: (e, _) => SurfaceCard(
-            child: Text(
-              'Could not load comparison.',
-              style: TextStyle(color: p.textSecondary),
+            child: InlineError(
+              message: 'Could not load comparison.',
+              onRetry: () => ref.invalidate(siteComparisonProvider),
             ),
           ),
           data: (comparison) {
@@ -150,9 +154,10 @@ class _BodyState extends ConsumerState<_Body> {
                   padding: EdgeInsets.all(16),
                   child: Center(child: CircularProgressIndicator()),
                 ),
-                error: (e, _) => Text(
-                  'Could not load history.',
-                  style: TextStyle(color: p.textSecondary),
+                error: (e, _) => InlineError(
+                  message: 'Could not load history.',
+                  onRetry: () =>
+                      ref.invalidate(siteHistoryProvider(current.siteId)),
                 ),
                 data: (entries) => Column(
                   children: [
@@ -186,12 +191,37 @@ class _ComparisonPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final p = context.palette;
-    final prev = ref
-        .watch(inspectionByIdProvider(comparison.previousInspectionId))
-        .value;
-    final curr = ref
-        .watch(inspectionByIdProvider(comparison.currentInspectionId))
-        .value;
+    final prevAsync = ref.watch(
+      inspectionByIdProvider(comparison.previousInspectionId),
+    );
+    final currAsync = ref.watch(
+      inspectionByIdProvider(comparison.currentInspectionId),
+    );
+    // Without both inspections the side cards would read as "Clear";
+    // show progress or the error instead of a wrong status.
+    if (prevAsync.hasError || currAsync.hasError) {
+      return SurfaceCard(
+        child: InlineError(
+          message: 'Could not load the compared inspections.',
+          onRetry: () {
+            ref.invalidate(
+              inspectionByIdProvider(comparison.previousInspectionId),
+            );
+            ref.invalidate(
+              inspectionByIdProvider(comparison.currentInspectionId),
+            );
+          },
+        ),
+      );
+    }
+    if (!prevAsync.hasValue || !currAsync.hasValue) {
+      return const Padding(
+        padding: EdgeInsets.all(24),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    final prev = prevAsync.value;
+    final curr = currAsync.value;
 
     if (comparison.entries.isEmpty) {
       return SurfaceCard(
