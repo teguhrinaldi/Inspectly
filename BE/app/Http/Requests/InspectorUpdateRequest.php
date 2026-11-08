@@ -19,7 +19,13 @@ class InspectorUpdateRequest extends FormRequest
 
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'max:255', Rule::unique('inspectors', 'email')->ignore($inspectorId)],
+            // The email is copied to the login (users) as well, so it must be
+            // free there too; otherwise the update fails with a 500.
+            'email' => [
+                'sometimes', 'email', 'max:255',
+                Rule::unique('inspectors', 'email')->ignore($inspectorId),
+                Rule::unique('users', 'email')->ignore(is_object($inspector) ? $inspector->user_id : null),
+            ],
             'phone' => ['nullable', 'string', 'max:50'],
             'password' => ['sometimes', 'string', 'min:6'],
             'avatar_url' => ['nullable', 'string', 'max:255'],

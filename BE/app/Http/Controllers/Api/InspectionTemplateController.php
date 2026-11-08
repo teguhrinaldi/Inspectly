@@ -85,6 +85,12 @@ class InspectionTemplateController extends Controller
 
     public function destroy(InspectionTemplate $inspectionTemplate): JsonResponse
     {
+        if ($inspectionTemplate->inspections()->exists()) {
+            return response()->json([
+                'message' => 'This template is used by inspections. Deactivate it instead of deleting it.',
+            ], 409);
+        }
+
         $inspectionTemplate->delete();
 
         return response()->json(null, 204);
