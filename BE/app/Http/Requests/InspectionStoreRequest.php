@@ -25,12 +25,17 @@ class InspectionStoreRequest extends FormRequest
                 ['required', 'integer', 'exists:users,id'],
                 $this->user()?->isAdmin() ? [] : [Rule::in([$this->user()?->id])],
             ),
-            'status' => ['sometimes', Rule::in([
+            // New work starts as draft/scheduled and moves on via
+            // start/complete; only an admin may record other states directly.
+            'status' => ['sometimes', Rule::in($this->user()?->isAdmin() ? [
                 Inspection::STATUS_DRAFT,
                 Inspection::STATUS_SCHEDULED,
                 Inspection::STATUS_IN_PROGRESS,
                 Inspection::STATUS_REVIEW,
                 Inspection::STATUS_COMPLETED,
+            ] : [
+                Inspection::STATUS_DRAFT,
+                Inspection::STATUS_SCHEDULED,
             ])],
             'scheduled_at' => ['nullable', 'date'],
             'recurrence' => ['sometimes', Rule::in([

@@ -80,6 +80,18 @@ class MockInspectionRepository implements InspectionRepository {
     double? locationLat,
     double? locationLng,
   }) async {
+    final current = _store.findInspection(id);
+    if (current == null) return const Failed(NotFoundFailure());
+    // Same rules as POST /inspections/{id}/start (QC-007).
+    if (current.status == InspectionStatus.review ||
+        current.status == InspectionStatus.completed) {
+      return const Failed(
+        ConflictFailure(
+          'This inspection has already been performed and cannot be started again.',
+        ),
+      );
+    }
+    if (current.status == InspectionStatus.inProgress) return Success(current);
     try {
       return Success(_store.start(id, lat: locationLat, lng: locationLng));
     } catch (_) {
@@ -110,6 +122,22 @@ class MockInspectionRepository implements InspectionRepository {
 
   @override
   Future<Result<Inspection>> complete(String id) async {
+    final current = _store.findInspection(id);
+    if (current == null) return const Failed(NotFoundFailure());
+    // Same rules as POST /inspections/{id}/complete (QC-007).
+    if (current.status == InspectionStatus.completed) return Success(current);
+    if (current.items.any((item) => item.result == null)) {
+      return const Failed(
+        ValidationFailure(
+          {
+            'items': [
+              'Every checklist item needs a result before the inspection can be completed.',
+            ],
+          },
+          'Every checklist item needs a result before the inspection can be completed.',
+        ),
+      );
+    }
     try {
       return Success(_store.complete(id));
     } catch (_) {

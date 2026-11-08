@@ -35,6 +35,14 @@ class NotFoundFailure extends Failure {
   ]);
 }
 
+/// HTTP 409: the action doesn't fit the record's current state (e.g.
+/// starting an inspection that was already performed).
+class ConflictFailure extends Failure {
+  const ConflictFailure([
+    super.message = 'This action is no longer possible for this item.',
+  ]);
+}
+
 class ValidationFailure extends Failure {
   const ValidationFailure(
     this.fieldErrors, [

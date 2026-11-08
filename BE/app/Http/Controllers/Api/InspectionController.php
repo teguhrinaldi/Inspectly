@@ -92,6 +92,15 @@ class InspectionController extends Controller
             'location_lng' => ['nullable', 'numeric', 'between:-180,180'],
         ]);
 
+        if (in_array($inspection->status, [Inspection::STATUS_REVIEW, Inspection::STATUS_COMPLETED], true)) {
+            return response()->json(['message' => 'This inspection has already been performed and cannot be started again.'], 409);
+        }
+
+        // Already running (retry, second device): nothing to change or log.
+        if ($inspection->status === Inspection::STATUS_IN_PROGRESS) {
+            return (new InspectionResource($inspection->load(self::EAGER)))->response();
+        }
+
         $attributes = [
             'status' => Inspection::STATUS_IN_PROGRESS,
             'started_at' => $inspection->started_at ?? now(),
@@ -133,14 +142,26 @@ class InspectionController extends Controller
      */
     public function complete(Request $request, Inspection $inspection): JsonResponse
     {
-        $inspection->load('items');
+        DB::transaction(function () use ($inspection, $request) {
+            // Row lock + re-read so a double tap or a network retry can't
+            // complete twice and schedule two follow-up inspections.
+            Inspection::whereKey($inspection->id)->lockForUpdate()->first();
+            $inspection->refresh()->load('items');
 
-        $passPercentage = $inspection->computePassPercentage();
+            if ($inspection->status === Inspection::STATUS_COMPLETED) {
+                return;
+            }
 
-        $completedAt = now();
-        $nextDueAt = $this->nextDueAt($inspection->recurrence, $completedAt);
+            if ($inspection->items->contains(fn (InspectionItem $item) => $item->result === null)) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'items' => ['Every checklist item needs a result before the inspection can be completed.'],
+                ]);
+            }
 
-        DB::transaction(function () use ($inspection, $passPercentage, $completedAt, $nextDueAt, $request) {
+            $passPercentage = $inspection->computePassPercentage();
+            $completedAt = now();
+            $nextDueAt = $this->nextDueAt($inspection->recurrence, $completedAt);
+
             $inspection->update([
                 'status' => Inspection::STATUS_COMPLETED,
                 'completed_at' => $completedAt,

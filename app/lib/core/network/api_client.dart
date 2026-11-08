@@ -157,6 +157,10 @@ class ApiClient {
         return NotFoundFailure(
           message ?? 'The requested item could not be found.',
         );
+      case 409:
+        return ConflictFailure(
+          message ?? 'This action is no longer possible for this item.',
+        );
       case 422:
         final errorsRaw = (body is Map ? body['errors'] : null) as Map?;
         final errors = <String, List<String>>{
