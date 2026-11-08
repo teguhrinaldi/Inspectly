@@ -32,8 +32,6 @@ class Inspection extends Model
 
     public const STATUS_IN_PROGRESS = 'in_progress';
 
-    public const STATUS_REVIEW = 'review';
-
     public const STATUS_COMPLETED = 'completed';
 
     public const RECURRENCE_ONE_TIME = 'one_time';

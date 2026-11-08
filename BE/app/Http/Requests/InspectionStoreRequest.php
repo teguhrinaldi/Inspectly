@@ -31,7 +31,6 @@ class InspectionStoreRequest extends FormRequest
                 Inspection::STATUS_DRAFT,
                 Inspection::STATUS_SCHEDULED,
                 Inspection::STATUS_IN_PROGRESS,
-                Inspection::STATUS_REVIEW,
                 Inspection::STATUS_COMPLETED,
             ] : [
                 Inspection::STATUS_DRAFT,

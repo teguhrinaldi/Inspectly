@@ -21,6 +21,24 @@ class HomeData {
   int countMine(InspectionStatus status) =>
       mine.where((i) => i.status == status).length;
 
+  /// Open findings on the signed-in inspector's most recent performed
+  /// inspection at each site — the same rule as the admin "Open Findings"
+  /// KPI, limited to my work (QC-026, replaces "Needs Review").
+  int get openFindingsMine {
+    DateTime? at(Inspection i) => i.completedAt ?? i.startedAt;
+    final latest = <String, Inspection>{};
+    for (final i in mine) {
+      if (i.status == InspectionStatus.scheduled || at(i) == null) continue;
+      final kept = latest[i.siteId];
+      if (kept == null || at(i)!.isAfter(at(kept)!)) latest[i.siteId] = i;
+    }
+    return latest.values.fold(
+      0,
+      (sum, i) =>
+          sum + i.findings.where((f) => f.status == FindingStatus.open).length,
+    );
+  }
+
   /// The signed-in inspector's inspection in progress, most recently started
   /// first — what "Continue" resumes.
   Inspection? get activeInspection {
@@ -49,7 +67,7 @@ class HomeData {
 
   /// The inspector's work for today: open inspections due today or overdue,
   /// plus anything completed today. The active inspection first, then other
-  /// in-progress, scheduled and review work, each by time.
+  /// in-progress and scheduled work, each by time.
   List<Inspection> get today {
     bool dueByToday(Inspection i) {
       final d = displayDate(i);
@@ -67,7 +85,6 @@ class HomeData {
         : switch (i.status) {
             InspectionStatus.inProgress => 1,
             InspectionStatus.scheduled => 2,
-            InspectionStatus.review => 3,
             _ => 4,
           };
 
@@ -75,8 +92,7 @@ class HomeData {
         .where(
           (i) => switch (i.status) {
             InspectionStatus.scheduled ||
-            InspectionStatus.inProgress ||
-            InspectionStatus.review => dueByToday(i),
+            InspectionStatus.inProgress => dueByToday(i),
             InspectionStatus.completed => completedToday(i),
             InspectionStatus.draft => false,
           },

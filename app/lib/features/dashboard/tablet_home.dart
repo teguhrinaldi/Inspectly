@@ -66,8 +66,8 @@ class TabletHome extends StatelessWidget {
           ),
           _SummaryTile(
             icon: LucideIcons.clock,
-            count: data.countMine(InspectionStatus.review),
-            label: 'Needs Review',
+            count: data.openFindingsMine,
+            label: 'Open Findings',
             tone: Tone.orange,
             showChevron: wide,
             onTap: () => onBranch(1),

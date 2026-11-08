@@ -97,8 +97,7 @@ class _WizardState extends ConsumerState<_Wizard> {
 
   bool get _editable =>
       canWriteInspection(ref.read(authStateProvider), inspection) &&
-      (inspection.status == InspectionStatus.inProgress ||
-          inspection.status == InspectionStatus.review);
+      inspection.status == InspectionStatus.inProgress;
 
   Future<void> _saveNote() async {
     final text = _noteController.text.trim();

@@ -34,11 +34,6 @@ class StatusStyle {
           tone: Tone.orange,
           label: 'In Progress',
         ),
-        InspectionStatus.review => const StatusStyle(
-          icon: LucideIcons.searchCheck,
-          tone: Tone.coral,
-          label: 'Review',
-        ),
         InspectionStatus.completed => const StatusStyle(
           icon: LucideIcons.circleCheck,
           tone: Tone.green,

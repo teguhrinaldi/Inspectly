@@ -34,7 +34,7 @@ this document must be updated first.
 
 ### Inspection
 - id, template_id (FK), customer_id (FK), site_id (FK), inspector_id (FK),
-  status (`draft`|`scheduled`|`in_progress`|`review`|`completed`),
+  status (`draft`|`scheduled`|`in_progress`|`completed`) — `review` was removed (QC-026),
   scheduled_at, started_at, completed_at,
   recurrence (`one_time`|`weekly`|`monthly`|`quarterly`), next_due_at (nullable),
   location_lat, location_lng, location_captured_at,
@@ -84,7 +84,7 @@ Inspection 1—* Activity
 
 ## 3. State enums (locked — do not add states without updating this file)
 
-- Inspection status: `DRAFT, SCHEDULED, IN_PROGRESS, REVIEW, COMPLETED`
+- Inspection status: `DRAFT, SCHEDULED, IN_PROGRESS, COMPLETED` (complete only from IN_PROGRESS)
 - Checklist result: `PASS, FAIL, NA`
 - Finding severity: `CRITICAL, HIGH, MEDIUM, LOW`
 - Finding status: `OPEN, RESOLVED`

@@ -51,8 +51,13 @@ void main() {
     expect(find.text('Riverside Office Complex'), findsWidgets);
     expect(find.text('7 / 12 items'), findsWidgets);
     expect(find.bySemanticsLabel('3 Scheduled'), findsOneWidget);
-    expect(find.bySemanticsLabel('2 In Progress'), findsOneWidget);
-    expect(find.bySemanticsLabel('1 Needs Review'), findsOneWidget);
+    expect(find.bySemanticsLabel('3 In Progress'), findsOneWidget);
+    // QC-026: the third tile counts open findings instead of reviews.
+    expect(
+      find.bySemanticsLabel(RegExp(r'^\d+ Open Findings$')),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Needs Review'), findsNothing);
     expect(find.text("Today's Inspections"), findsOneWidget);
     expect(find.text('Quick Actions'), findsOneWidget);
     expect(find.text('Recent Reports'), findsOneWidget);

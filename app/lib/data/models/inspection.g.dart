@@ -91,7 +91,6 @@ const _$InspectionStatusEnumMap = {
   InspectionStatus.draft: 'draft',
   InspectionStatus.scheduled: 'scheduled',
   InspectionStatus.inProgress: 'in_progress',
-  InspectionStatus.review: 'review',
   InspectionStatus.completed: 'completed',
 };
 

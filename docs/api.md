@@ -33,7 +33,7 @@ GET  /inspections?status=&site_id=&search=&inspector_id=&per_page=   -> paginate
 GET  /inspections/{id}
 POST /inspections          {template_id, site_id, customer_id, inspector_id, recurrence, status?, scheduled_at?}   (non-admin: inspector_id must be the caller)
 PUT  /inspections/{id}     (admin)
-POST /inspections/{id}/start      {location_lat?, location_lng?}   409 if already review/completed; no-op if in_progress
+POST /inspections/{id}/start      {location_lat?, location_lng?}   409 if already completed; no-op if in_progress; owner or admin only
 POST /inspections/{id}/complete                                     422 (errors.items) if an item has no result; no-op if already completed
 PUT  /inspections/{id}/items/{itemId}   {result?, note?}   -> the updated InspectionItem (not the Inspection)
 ```

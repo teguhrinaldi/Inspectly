@@ -4,18 +4,17 @@
     $overview = $this->overview();
     $openFindings = $this->openFindingsCount();
     $statusTone = [
-        'scheduled' => 'blue', 'in_progress' => 'orange', 'review' => 'coral',
+        'scheduled' => 'blue', 'in_progress' => 'orange',
         'completed' => 'green', 'draft' => 'slate',
     ];
     $statusLabel = [
-        'scheduled' => 'Scheduled', 'in_progress' => 'In Progress', 'review' => 'Review',
+        'scheduled' => 'Scheduled', 'in_progress' => 'In Progress',
         'completed' => 'Completed', 'draft' => 'Draft',
     ];
     $severityTone = ['critical' => 'red', 'high' => 'orange', 'medium' => 'amber', 'low' => 'green'];
     $chartSeries = [
         ['name' => 'Completed', 'color' => '#16A34A', 'values' => $overview['series']['completed'], 'area' => true],
         ['name' => 'Started', 'color' => '#1677FF', 'values' => $overview['series']['started']],
-        ['name' => 'Needs Review', 'color' => '#E02D2D', 'values' => $overview['series']['review']],
     ];
 @endphp
 

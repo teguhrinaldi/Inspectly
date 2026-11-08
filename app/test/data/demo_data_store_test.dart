@@ -91,19 +91,21 @@ void main() {
   );
 
   test(
-    'Home work counts for Michael: 3 scheduled / 2 in progress / 1 review',
+    // QC-026: no "review" status — the Central Warehouse visit that used
+    // to wait for review continues in progress.
+    'Home work counts for Michael: 3 scheduled / 3 in progress',
     () {
       final mine = store.inspections.where(
         (i) => i.inspectorId == 'user-michael',
       );
       int n(InspectionStatus s) => mine.where((i) => i.status == s).length;
       expect(
-        [
-          n(InspectionStatus.scheduled),
-          n(InspectionStatus.inProgress),
-          n(InspectionStatus.review),
-        ],
-        [3, 2, 1],
+        [n(InspectionStatus.scheduled), n(InspectionStatus.inProgress)],
+        [3, 3],
+      );
+      expect(
+        InspectionStatus.values.map((s) => s.name),
+        isNot(contains('review')),
       );
     },
   );

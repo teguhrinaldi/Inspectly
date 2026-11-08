@@ -117,8 +117,6 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
         context.push('/checklist/$id');
       case InspectionStatus.inProgress:
         context.push('/checklist/$id');
-      case InspectionStatus.review:
-        context.go('/inspections/$id/signature');
       case InspectionStatus.completed:
         context.go('/inspections/$id/summary');
     }
@@ -130,7 +128,6 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
   String get _ctaLabel => switch (inspection.status) {
     InspectionStatus.draft || InspectionStatus.scheduled => 'Start Inspection',
     InspectionStatus.inProgress => 'Continue Inspection',
-    InspectionStatus.review => 'Review & Sign',
     InspectionStatus.completed => 'View Risk Summary',
   };
 

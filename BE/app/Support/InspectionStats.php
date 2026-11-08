@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
  * a current count from the database (drafts excluded); trends compare the
  * last 30 days with the 30 before (see TrendWindow), by the date that makes
  * the inspection count: scheduled (total), completed, started (in progress)
- * and performed (needs review).
+ * and performed.
  */
 class InspectionStats
 {
@@ -39,6 +39,9 @@ class InspectionStats
             return TrendWindow::change($count(TrendWindow::LAST), $count(TrendWindow::PREV));
         };
         $status = fn (string $s) => $all->where('status', $s);
+        $findingsIn = fn (string $w) => $all
+            ->filter(fn (Inspection $i) => TrendWindow::of(TrendWindow::activityDate($i)) === $w)
+            ->sum(fn (Inspection $i) => $i->findings->count());
 
         return [
             [
@@ -66,11 +69,14 @@ class InspectionStats
                 'tone' => 'orange',
             ],
             [
-                'key' => 'review',
-                'label' => 'Needs Review',
-                'value' => $status(Inspection::STATUS_REVIEW)->count(),
-                'trend' => $trend(fn (Inspection $i) => $i->status === Inspection::STATUS_REVIEW ? TrendWindow::activityDate($i) : null),
-                'icon' => 'heroicon-o-exclamation-circle',
+                // QC-026: replaces "Needs Review". Open findings on each
+                // site's latest performed inspection; trend = findings raised
+                // in the last 30 days vs the 30 before.
+                'key' => 'open_findings',
+                'label' => 'Open Findings',
+                'value' => $this->openFindings(),
+                'trend' => TrendWindow::change($findingsIn(TrendWindow::LAST), $findingsIn(TrendWindow::PREV)),
+                'icon' => 'heroicon-o-exclamation-triangle',
                 'tone' => 'red',
             ],
         ];
@@ -87,7 +93,6 @@ class InspectionStats
      * Activity per day (or week) over [period], ending today:
      * - completed: inspections completed in the bucket,
      * - started: inspections started in the bucket,
-     * - review: inspections now waiting for review, by the day they were performed.
      *
      * @return array{labels: array<int, string>, range: string, series: array<string, array<int, int>>}
      */
@@ -107,16 +112,13 @@ class InspectionStats
             return $days >= 0 && $index < $count ? $index : null;
         };
 
-        $series = ['completed' => array_fill(0, $count, 0), 'started' => array_fill(0, $count, 0), 'review' => array_fill(0, $count, 0)];
+        $series = ['completed' => array_fill(0, $count, 0), 'started' => array_fill(0, $count, 0)];
         foreach ($this->inspections() as $i) {
             if (($b = $bucket($i->completed_at)) !== null) {
                 $series['completed'][$b]++;
             }
             if (($b = $bucket($i->started_at)) !== null) {
                 $series['started'][$b]++;
-            }
-            if ($i->status === Inspection::STATUS_REVIEW && ($b = $bucket(TrendWindow::activityDate($i))) !== null) {
-                $series['review'][$b]++;
             }
         }
 
@@ -130,5 +132,24 @@ class InspectionStats
             'range' => $first->format('M j').' – '.$today->format('M j, Y'),
             'series' => $series,
         ];
+    }
+
+    /** @return Collection<int, Inspection> each site's most recent performed inspection */
+    public function latestPerSite(): Collection
+    {
+        return $this->inspections()
+            ->whereNotIn('status', [Inspection::STATUS_SCHEDULED])
+            ->filter(fn (Inspection $i) => TrendWindow::activityDate($i) !== null)
+            ->groupBy('site_id')
+            ->map(fn (Collection $g) => $g->sortByDesc(fn (Inspection $i) => TrendWindow::activityDate($i)->timestamp)->first())
+            ->values();
+    }
+
+    /** Open findings on each site's most recent performed inspection. */
+    public function openFindings(): int
+    {
+        return $this->latestPerSite()->sum(
+            fn (Inspection $i) => $i->findings->where('status', \App\Models\Finding::STATUS_OPEN)->count()
+        );
     }
 }

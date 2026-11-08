@@ -279,12 +279,19 @@ class DemoSeeder extends Seeder
         $this->sign($mapleInspection, 'Daniel Brooks', $mapleDone);
         $this->finish($mapleInspection, $daniel);
 
-        $centralReview = $this->inspection($equipment, $central, $michael, Inspection::STATUS_REVIEW, [
+        $centralReview = $this->inspection($equipment, $central, $michael, Inspection::STATUS_IN_PROGRESS, [
             'scheduled_at' => $day(1, 9, 0), 'started_at' => $hist(9, 24, 7, 0), 'recurrence' => Inspection::RECURRENCE_MONTHLY,
         ]);
         $cr = $this->answer($centralReview, ['Forklift' => [$fail, 'Forklift horn inoperative.']], $pass);
         $this->finding($centralReview, $cr['Forklift'], 'Forklift Horn Inoperative', 'medium', 'Loading Dock 2',
             'The warning horn on forklift FL-02 does not sound.', 'Tag out FL-02 until the horn is repaired.', [], $hist(9, 24, 7, 0));
+
+        // With "review" gone (QC-026) the Central Warehouse visit above counts
+        // as in progress, so the planner adds one filler less; this upcoming
+        // visit keeps the story at the mockup's 48 inspections.
+        $this->inspection($safety, $westlake, $sarah, Inspection::STATUS_SCHEDULED, [
+            'scheduled_at' => $story(2027, 2, 10, 10, 0), 'recurrence' => Inspection::RECURRENCE_QUARTERLY,
+        ]);
 
         // Upcoming / open work (Michael) --------------------------------------
         $this->inspection($property, $westlake, $michael, Inspection::STATUS_SCHEDULED, [

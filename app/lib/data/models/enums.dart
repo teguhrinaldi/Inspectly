@@ -11,8 +11,6 @@ enum InspectionStatus {
   scheduled,
   @JsonValue('in_progress')
   inProgress,
-  @JsonValue('review')
-  review,
   @JsonValue('completed')
   completed;
 
@@ -20,7 +18,6 @@ enum InspectionStatus {
     InspectionStatus.draft => 'Draft',
     InspectionStatus.scheduled => 'Scheduled',
     InspectionStatus.inProgress => 'In Progress',
-    InspectionStatus.review => 'Review',
     InspectionStatus.completed => 'Completed',
   };
 }

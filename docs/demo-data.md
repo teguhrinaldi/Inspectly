@@ -13,7 +13,7 @@ Both sides are locked by tests (`app/test/data/demo_data_store_test.dart`,
 |---|---|
 | Overall Compliance (risk ring, admin donut centre) | 100 − Σ deductions per finding: Critical 8, High 5, Medium 2, Low 1 (min 0) |
 | Passed / Needs Attention / Failed | Passed items; failed items whose findings are only medium/low; failed items with a critical/high finding |
-| Home "Today's Inspections" tiles | The signed-in inspector's scheduled / in-progress / review inspections |
+| Home "Today's Inspections" tiles | The signed-in inspector's scheduled / in-progress inspections and open findings (latest inspection per site) |
 | Admin Total / In Progress / Completed | Current counts (drafts excluded) |
 | Admin Open Findings | Open findings on each site's most recent performed inspection |
 | Admin trends | Last 30 days vs the 30 before, day-based: inspections scheduled / started / completed, findings raised |
@@ -47,7 +47,7 @@ Dec 27 / Jan 14, work items today and tomorrow.
 |---|---|---|
 | Riverside · Safety · today 09:30 (Michael) | In progress, 7/12, 3 findings, 14 photos | Home, List, Detail, Checklist |
 | Westlake · Property · today 14:00 (Michael) | Scheduled | Home, List, admin Recent Inspections |
-| Central Warehouse · Equipment · tomorrow 09:00 (Michael) | Review (performed Sep 24) | Home, List, admin |
+| Central Warehouse · Equipment · tomorrow 09:00 (Michael) | In progress (started Sep 24, forklift finding open) | Home, List, admin |
 | Maple · Safety · tomorrow 10:30 (Daniel) | Completed early (Sep 25), 1 open finding: Blocked Emergency Exit | List, admin |
 | Oakwood · Property · Dec 5 08:00 (Michael) | Scheduled | List |
 | Riverside · Safety · Sep 27 (Michael) | Completed: 7 pass / 3 attention / 2 failed, findings 1C 3H 2M 1L → 72%, next Dec 27 | Findings, Evidence, Risk Summary, Comparison, admin donut |
@@ -61,8 +61,10 @@ Exposed Live Wiring (Critical, 1), Exit Sign Not Illuminated (High, 1),
 Water-Stained Ceiling (Medium, 1).
 
 Michael also has a Central Warehouse Safety inspection scheduled Jan 14 and an
-Oakwood inspection in progress since yesterday — together: 3 scheduled, 2 in
-progress, 1 review.
+Oakwood inspection in progress since yesterday — together: 3 scheduled and 3 in
+progress (the Central Warehouse visit no longer waits for "review", QC-026).
+Sarah has one more Westlake safety visit scheduled for Feb 10, which keeps the
+admin total at 48.
 
 ## Routine history
 

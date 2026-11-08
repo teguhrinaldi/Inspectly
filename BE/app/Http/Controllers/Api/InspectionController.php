@@ -94,7 +94,7 @@ class InspectionController extends Controller
             'location_lng' => ['nullable', 'numeric', 'between:-180,180'],
         ]);
 
-        if (in_array($inspection->status, [Inspection::STATUS_REVIEW, Inspection::STATUS_COMPLETED], true)) {
+        if ($inspection->status === Inspection::STATUS_COMPLETED) {
             return response()->json(['message' => 'This inspection has already been performed and cannot be started again.'], 409);
         }
 

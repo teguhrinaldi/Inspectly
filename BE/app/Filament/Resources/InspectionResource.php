@@ -76,7 +76,6 @@ class InspectionResource extends Resource
                         'draft' => 'Draft',
                         'scheduled' => 'Scheduled',
                         'in_progress' => 'In progress',
-                        'review' => 'Review',
                         'completed' => 'Completed',
                     ])
                     ->required(),
@@ -103,7 +102,6 @@ class InspectionResource extends Resource
             'draft' => 'Draft',
             'scheduled' => 'Scheduled',
             'in_progress' => 'In Progress',
-            'review' => 'Needs Review',
             'completed' => 'Completed',
         ];
         $dateTime = fn (string $column) => Tables\Columns\TextColumn::make($column)

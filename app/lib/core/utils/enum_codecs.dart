@@ -21,6 +21,5 @@ String inspectionStatusToJson(InspectionStatus s) => switch (s) {
   InspectionStatus.draft => 'draft',
   InspectionStatus.scheduled => 'scheduled',
   InspectionStatus.inProgress => 'in_progress',
-  InspectionStatus.review => 'review',
   InspectionStatus.completed => 'completed',
 };

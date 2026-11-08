@@ -28,7 +28,6 @@ class _InspectionListScreenState extends ConsumerState<InspectionListScreen> {
   static const _filters = [
     InspectionStatus.scheduled,
     InspectionStatus.inProgress,
-    InspectionStatus.review,
     InspectionStatus.completed,
     InspectionStatus.draft,
   ];

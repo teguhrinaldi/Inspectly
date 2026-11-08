@@ -91,8 +91,7 @@ class MockInspectionRepository implements InspectionRepository {
       );
     }
     // Same rules as POST /inspections/{id}/start (QC-007).
-    if (current.status == InspectionStatus.review ||
-        current.status == InspectionStatus.completed) {
+    if (current.status == InspectionStatus.completed) {
       return const Failed(
         ConflictFailure(
           'This inspection has already been performed and cannot be started again.',

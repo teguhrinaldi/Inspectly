@@ -150,9 +150,11 @@ class FilamentAdminPanelTest extends TestCase
 
         $dashboard = new \App\Filament\Pages\Dashboard;
         $stats = collect($dashboard->stats())->keyBy('label');
-        $this->assertSame(['Total Inspections', 'Completed', 'In Progress', 'Needs Review'], $stats->keys()->all());
-        $this->assertSame([48, 32, 12, 1], $stats->pluck('value')->all());
-        $this->assertSame([12, 8], [$stats['Total Inspections']['trend'], $stats['Completed']['trend']]);
+        // QC-026: the 4th KPI is Open Findings (master mockup: 7, -2%).
+        $this->assertSame(['Total Inspections', 'Completed', 'In Progress', 'Open Findings'], $stats->keys()->all());
+        $this->assertSame([48, 32, 12, 7], $stats->pluck('value')->all());
+        $this->assertSame([12, 8, -2], [$stats['Total Inspections']['trend'], $stats['Completed']['trend'], $stats['Open Findings']['trend']]);
+        $this->assertSame(0, Inspection::where('status', 'review')->count());
         $this->assertSame(7, $dashboard->openFindingsCount());
 
         $risk = $dashboard->riskOverview();
@@ -222,10 +224,10 @@ class FilamentAdminPanelTest extends TestCase
             ->assertCanSeeTableRecords($riverside->take(10))
             ->assertCanNotSeeTableRecords($others);
 
-        $review = Inspection::where('status', Inspection::STATUS_REVIEW)->get();
+        $inProgress = Inspection::where('status', Inspection::STATUS_IN_PROGRESS)->get();
         Livewire::test($page)
-            ->filterTable('status', Inspection::STATUS_REVIEW)
-            ->assertCanSeeTableRecords($review)
-            ->assertCountTableRecords($review->count());
+            ->filterTable('status', Inspection::STATUS_IN_PROGRESS)
+            ->assertCanSeeTableRecords($inProgress->take(10))
+            ->assertCountTableRecords($inProgress->count());
     }
 }

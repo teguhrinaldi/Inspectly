@@ -62,16 +62,11 @@ class Dashboard extends BaseDashboard
     /** @return Collection<int, Inspection> each site's most recent performed inspection */
     private function latestPerSite(): Collection
     {
-        return $this->inspections()
-            ->whereNotIn('status', [Inspection::STATUS_SCHEDULED])
-            ->filter(fn (Inspection $i) => TrendWindow::activityDate($i) !== null)
-            ->groupBy('site_id')
-            ->map(fn (Collection $g) => $g->sortByDesc(fn (Inspection $i) => TrendWindow::activityDate($i)->timestamp)->first())
-            ->values();
+        return $this->source()->latestPerSite();
     }
 
     /**
-     * Total / Completed / In Progress / Needs Review, with 30-day trends.
+     * Total / Completed / In Progress / Open Findings, with 30-day trends.
      *
      * @return array<int, array{key: string, label: string, value: int, trend: ?int, icon: string, tone: string}>
      */
@@ -83,7 +78,7 @@ class Dashboard extends BaseDashboard
     /** Open findings on each site's most recent performed inspection. */
     public function openFindingsCount(): int
     {
-        return $this->latestPerSite()->sum(fn (Inspection $i) => $i->findings->where('status', Finding::STATUS_OPEN)->count());
+        return $this->source()->openFindings();
     }
 
     /** @return array{labels: array<int, string>, range: string, series: array<string, array<int, int>>} */

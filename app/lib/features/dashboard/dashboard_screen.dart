@@ -179,8 +179,8 @@ class _PhoneHome extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               _CountTile(
-                count: home.countMine(InspectionStatus.review),
-                label: 'Needs Review',
+                count: home.openFindingsMine,
+                label: 'Open Findings',
                 tone: Tone.orange,
               ),
             ],

@@ -26,6 +26,8 @@ void main() {
     expect(find.text("Today's Inspections"), findsOneWidget);
     expect(find.text('Quick Actions'), findsOneWidget);
     expect(find.text('Upcoming Inspections'), findsOneWidget);
+    expect(find.text('Open Findings'), findsOneWidget); // QC-026
+    expect(find.text('Needs Review'), findsNothing);
     for (final tab in ['Home', 'Inspections', 'Create', 'Reports', 'Profile']) {
       expect(find.bySemanticsLabel(tab), findsWidgets);
     }

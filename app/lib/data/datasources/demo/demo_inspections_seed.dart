@@ -493,7 +493,8 @@ List<Inspection> buildDemoInspections({DateTime? clock}) {
     template: equipment,
     siteId: 'site-centralwh',
     inspectorId: 'user-michael',
-    status: InspectionStatus.review,
+    // QC-026: no "review" status any more; the visit continues in progress.
+    status: InspectionStatus.inProgress,
     scheduledAt: day(1, 9, 0),
     startedAt: hist(9, 24, 7, 0),
     recurrence: RecurrenceType.monthly,
@@ -516,6 +517,19 @@ List<Inspection> buildDemoInspections({DateTime? clock}) {
         const [],
       ),
     ],
+  );
+
+  // Keeps the admin total at the mockup's 48 now that the Central Warehouse
+  // visit counts as in progress (mirrors DemoSeeder, QC-026).
+  final westlakeSafety = base(
+    id: 'insp-westlake-safety-feb',
+    template: safety,
+    siteId: 'site-westlake-apts',
+    inspectorId: 'user-sarah',
+    status: InspectionStatus.scheduled,
+    scheduledAt: DateTime(y + 1, 2, 10, 10),
+    recurrence: RecurrenceType.quarterly,
+    items: _items('insp-westlake-safety-feb', 'westlakefeb', safety, const {}),
   );
 
   // --- Upcoming / open work (Michael) ---------------------------------------
@@ -581,6 +595,7 @@ List<Inspection> buildDemoInspections({DateTime? clock}) {
     westlakeLast,
     riversideAug12,
     riversideJul03,
+    westlakeSafety,
   ];
 
   // --- Earlier routine inspections at the other sites -----------------------
