@@ -7,10 +7,10 @@
     <!-- Evidence capture (spec §9.8/§9.9). -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <!-- Gallery picking on Android 13+ (image_picker). -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <!-- Gallery picking on Android 12 and below. -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+    <!-- Gallery picking needs no storage/media permission: image_picker uses
+         the Android Photo Picker (PickVisualMedia, backported to older
+         versions), and Google Play rejects apps that request
+         READ_MEDIA_IMAGES only for one-off picks. -->
     <!-- GPS tagging on inspection start / evidence capture (spec §9.10) —
          foreground, one-shot reads only. Never ACCESS_BACKGROUND_LOCATION:
          this product deliberately has no background/realtime tracking. -->
