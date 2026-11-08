@@ -21,6 +21,10 @@ Future<bool> addFindingFlow(
   String? itemId,
   String? itemLabel,
 }) async {
+  // Captured before any await: the widget may be gone when we resume.
+  final inspectionRepo = ref.read(inspectionRepositoryProvider);
+  final evidenceRepo = ref.read(evidenceRepositoryProvider);
+  final container = ProviderScope.containerOf(context, listen: false);
   final draft = await FindingFormSheet.show(
     context,
     itemLabel: itemLabel,
@@ -29,32 +33,30 @@ Future<bool> addFindingFlow(
   );
   if (draft == null) return false;
 
-  final result = await ref
-      .read(inspectionRepositoryProvider)
-      .addFinding(
-        Finding(
-          id: 'find-${_uuid.v4()}',
-          inspectionId: inspection.id,
-          inspectionItemId: itemId,
-          title: draft.title,
-          description: draft.description,
-          severity: draft.severity,
-          recommendation: draft.recommendation,
-          location: draft.location,
-        ),
-      );
+  final result = await inspectionRepo.addFinding(
+    Finding(
+      id: 'find-${_uuid.v4()}',
+      inspectionId: inspection.id,
+      inspectionItemId: itemId,
+      title: draft.title,
+      description: draft.description,
+      severity: draft.severity,
+      recommendation: draft.recommendation,
+      location: draft.location,
+    ),
+  );
   final saved = result.dataOrNull;
   if (saved == null) {
     if (context.mounted) _showError(context, 'Could not save the finding.');
     return false;
   }
   final failed = await attachPhotos(
-    ref.read(evidenceRepositoryProvider),
+    evidenceRepo,
     inspectionId: inspection.id,
     findingId: saved.id,
     photos: draft.photos,
   );
-  ref.invalidateInspection(inspection.id);
+  container.invalidateInspection(inspection.id);
   if (failed > 0 && context.mounted) {
     _showError(
       context,
@@ -95,25 +97,26 @@ Future<void> addItemPhotoFlow(
   Inspection inspection,
   String itemId,
 ) async {
+  // Captured before any await: the widget may be gone when we resume.
+  final evidenceRepo = ref.read(evidenceRepositoryProvider);
+  final container = ProviderScope.containerOf(context, listen: false);
   final photo = await capturePhoto(
     context,
     siteName: inspection.siteName,
     inspectorName: inspection.inspectorName,
   );
   if (photo == null) return;
-  final result = await ref
-      .read(evidenceRepositoryProvider)
-      .attach(
-        inspectionId: inspection.id,
-        inspectionItemId: itemId,
-        localFilePath: photo.path,
-        latitude: photo.latitude,
-        longitude: photo.longitude,
-      );
+  final result = await evidenceRepo.attach(
+    inspectionId: inspection.id,
+    inspectionItemId: itemId,
+    localFilePath: photo.path,
+    latitude: photo.latitude,
+    longitude: photo.longitude,
+  );
   if (result.dataOrNull == null && context.mounted) {
     _showError(context, 'Could not save the photo.');
   }
-  ref.invalidateInspection(inspection.id);
+  container.invalidateInspection(inspection.id);
 }
 
 void _showError(BuildContext context, String message) {

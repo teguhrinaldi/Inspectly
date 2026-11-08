@@ -152,6 +152,7 @@ class FindingDetailSheet extends ConsumerWidget {
     final evidenceRepo = ref.read(evidenceRepositoryProvider);
     final inspectionRepo = ref.read(inspectionRepositoryProvider);
     final messenger = ScaffoldMessenger.maybeOf(context);
+    final container = ProviderScope.containerOf(context, listen: false);
 
     Future<void> addPhoto() async {
       final photo = await capturePhoto(
@@ -172,7 +173,7 @@ class FindingDetailSheet extends ConsumerWidget {
           const SnackBar(content: Text('Could not save the photo.')),
         );
       }
-      if (context.mounted) ref.invalidateInspection(inspection.id);
+      container.invalidateInspection(inspection.id);
     }
 
     Future<void> toggleResolved() async {
@@ -192,7 +193,7 @@ class FindingDetailSheet extends ConsumerWidget {
           ),
         );
       }
-      if (context.mounted) ref.invalidateInspection(inspection.id);
+      container.invalidateInspection(inspection.id);
     }
 
     Widget block(String title, String? body) => body == null

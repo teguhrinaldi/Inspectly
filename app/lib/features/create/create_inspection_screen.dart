@@ -85,6 +85,7 @@ class _CreateInspectionScreenState
     if (auth is! AuthLoggedIn || site == null || _templateId == null) return;
     setState(() => _saving = true);
     final repo = ref.read(inspectionRepositoryProvider);
+    final container = ProviderScope.containerOf(context, listen: false);
     final created = await repo.create(
       templateId: _templateId!,
       siteId: site.id,
@@ -111,7 +112,7 @@ class _CreateInspectionScreenState
         locationLng: location is LocationSuccess ? location.longitude : null,
       );
     }
-    ref.invalidateInspection(inspection.id);
+    container.invalidateInspection(inspection.id);
     if (!mounted) return;
     setState(() {
       _saving = false;

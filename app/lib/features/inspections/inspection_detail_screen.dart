@@ -81,19 +81,15 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
       case InspectionStatus.draft:
       case InspectionStatus.scheduled:
         setState(() => _starting = true);
+        final repo = ref.read(inspectionRepositoryProvider);
+        final container = ProviderScope.containerOf(context, listen: false);
         final location = await LocationService().getCurrentLocation();
-        final result = await ref
-            .read(inspectionRepositoryProvider)
-            .start(
-              id,
-              locationLat: location is LocationSuccess
-                  ? location.latitude
-                  : null,
-              locationLng: location is LocationSuccess
-                  ? location.longitude
-                  : null,
-            );
-        ref.invalidateInspection(id);
+        final result = await repo.start(
+          id,
+          locationLat: location is LocationSuccess ? location.latitude : null,
+          locationLng: location is LocationSuccess ? location.longitude : null,
+        );
+        container.invalidateInspection(id);
         if (!mounted) return;
         setState(() => _starting = false);
         if (result.dataOrNull == null) {

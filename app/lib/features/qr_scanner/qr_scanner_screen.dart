@@ -119,6 +119,7 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
     if (site == null || templateId == null || auth is! AuthLoggedIn) return;
     setState(() => _starting = true);
     final repo = ref.read(inspectionRepositoryProvider);
+    final container = ProviderScope.containerOf(context, listen: false);
     final created = await repo.create(
       templateId: templateId,
       siteId: site.id,
@@ -142,7 +143,7 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
       locationLat: location is LocationSuccess ? location.latitude : null,
       locationLng: location is LocationSuccess ? location.longitude : null,
     );
-    ref.invalidateInspection(inspection.id);
+    container.invalidateInspection(inspection.id);
     if (!mounted) return;
     context.go('/inspections/${inspection.id}');
     context.push('/checklist/${inspection.id}');

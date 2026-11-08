@@ -108,7 +108,10 @@ class _SignatureBodyState extends ConsumerState<_SignatureBody> {
 
   Future<void> _save() async {
     setState(() => _saving = true);
+    // Captured before any await: the user may leave while saving.
     final repo = ref.read(signatureRepositoryProvider);
+    final inspectionRepo = ref.read(inspectionRepositoryProvider);
+    final container = ProviderScope.containerOf(context, listen: false);
     try {
       for (final (type, pad, signer) in [
         (SignatureType.inspector, _inspectorPad, inspection.inspectorName),
@@ -128,20 +131,16 @@ class _SignatureBodyState extends ConsumerState<_SignatureBody> {
         _resigning.remove(type);
       }
 
-      final fresh =
-          (await ref.read(inspectionRepositoryProvider).getById(inspection.id))
-              .dataOrNull;
+      final fresh = (await inspectionRepo.getById(inspection.id)).dataOrNull;
       final signed = fresh?.signatures.map((s) => s.type).toSet() ?? {};
       final complete =
           signed.contains(SignatureType.inspector) &&
           signed.contains(SignatureType.customer);
       if (complete && fresh!.status != InspectionStatus.completed) {
-        final done = await ref
-            .read(inspectionRepositoryProvider)
-            .complete(inspection.id);
+        final done = await inspectionRepo.complete(inspection.id);
         if (done.dataOrNull == null) throw StateError('complete failed');
       }
-      ref.invalidateInspection(inspection.id);
+      container.invalidateInspection(inspection.id);
       if (!mounted) return;
       if (complete) {
         context.go('/inspections/${inspection.id}/summary');
@@ -154,7 +153,8 @@ class _SignatureBodyState extends ConsumerState<_SignatureBody> {
           ),
         );
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('SignatureScreen: save failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Could not save the signature.')),
