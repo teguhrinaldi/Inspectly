@@ -32,12 +32,16 @@ class DemoSeeder extends Seeder
 
     public function run(): void
     {
-        $now = Carbon::now();
         $day = fn (int $offset, int $h, int $m) => Carbon::today()->addDays($offset)->setTime($h, $m);
-        // Site history sits on fixed days (Jul 3 / Aug 12 / Sep 27) of the most
-        // recent year in which Sep 27 has already passed.
-        $historyYear = Carbon::create($now->year, 9, 28)->isAfter($now) ? $now->year - 1 : $now->year;
-        $hist = fn (int $month, int $d, int $h, int $m) => Carbon::create($historyYear, $month, $d, $h, $m);
+        // The story was written for "today" = Sep 29, 2026 (the mockup day).
+        // Every fixed day keeps its distance to today (Sep 27 = 2 days ago,
+        // Dec 27 = in 89 days ...), so the dashboard numbers are the mockup's
+        // on any date the demo is seeded (QC-020).
+        $storyToday = Carbon::create(2026, 9, 29);
+        $story = fn (int $year, int $month, int $d, int $h, int $m) => Carbon::today()
+            ->addDays((int) $storyToday->diffInDays(Carbon::create($year, $month, $d), false))
+            ->setTime($h, $m);
+        $hist = fn (int $month, int $d, int $h, int $m) => $story(2026, $month, $d, $h, $m);
 
         // Users / inspectors ------------------------------------------------
         User::create([
@@ -177,7 +181,7 @@ class DemoSeeder extends Seeder
         $sep27 = $this->inspection($safety, $riverside, $michael, Inspection::STATUS_COMPLETED, [
             'scheduled_at' => $sepStart, 'started_at' => $sepStart, 'completed_at' => $sep,
             'recurrence' => Inspection::RECURRENCE_QUARTERLY,
-            'next_due_at' => Carbon::create($historyYear, 12, 27, 9, 0),
+            'next_due_at' => $story(2026, 12, 27, 9, 0),
             'location_lat' => $riverside->latitude, 'location_lng' => $riverside->longitude, 'location_captured_at' => $sepStart,
         ]);
         $sepItems = $this->answer($sep27, [
@@ -287,10 +291,10 @@ class DemoSeeder extends Seeder
             'scheduled_at' => $day(0, 14, 0), 'recurrence' => Inspection::RECURRENCE_MONTHLY,
         ]);
         $this->inspection($property, $oakwood, $michael, Inspection::STATUS_SCHEDULED, [
-            'scheduled_at' => Carbon::create($historyYear, 12, 5, 8, 0), 'recurrence' => Inspection::RECURRENCE_QUARTERLY,
+            'scheduled_at' => $story(2026, 12, 5, 8, 0), 'recurrence' => Inspection::RECURRENCE_QUARTERLY,
         ]);
         $this->inspection($safety, $central, $michael, Inspection::STATUS_SCHEDULED, [
-            'scheduled_at' => Carbon::create($historyYear + 1, 1, 14, 9, 0), 'recurrence' => Inspection::RECURRENCE_QUARTERLY,
+            'scheduled_at' => $story(2027, 1, 14, 9, 0), 'recurrence' => Inspection::RECURRENCE_QUARTERLY,
         ]);
         $oakIp = $this->inspection($property, $oakwood, $michael, Inspection::STATUS_IN_PROGRESS, [
             'scheduled_at' => $day(-1, 8, 0), 'started_at' => $day(-1, 8, 10),

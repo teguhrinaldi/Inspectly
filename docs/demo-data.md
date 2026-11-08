@@ -23,9 +23,16 @@ Both sides are locked by tests (`app/test/data/demo_data_store_test.dart`,
 
 ## Dates
 
-Site history uses fixed days — Jul 3, Aug 12, Sep 27 (and Sep 23–26 site
-records) — of the most recent year in which Sep 27 has passed. Work items are
-relative to today.
+The story is written as if today were Sep 29 (the mockup day): site history on
+Jul 3, Aug 12, Sep 27 (and Sep 23–26 site records), next visits on Dec 5 /
+Dec 27 / Jan 14, work items today and tomorrow.
+
+- **Laravel (`DemoSeeder`)**: every story day keeps its distance to the day you
+  seed (Sep 27 = 2 days ago, Dec 27 = in 89 days …), so the admin dashboard
+  shows the mockup numbers on any date. Dates on screen are therefore relative
+  to the seeding day, not literally "Sep 27".
+- **Flutter Demo Mode**: site history stays on the literal calendar days of the
+  most recent year in which Sep 27 has passed; work items are relative to today.
 
 ## People, customers, sites, templates
 

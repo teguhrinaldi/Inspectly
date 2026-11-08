@@ -128,13 +128,23 @@ class FilamentAdminPanelTest extends TestCase
         $this->assertSame(0, $template->sections()->count());
     }
 
-    public function test_dashboard_reproduces_the_demo_story(): void
+    /** Any day: the demo story is anchored to "today" (QC-020). */
+    public static function storyDays(): array
     {
-        // The demo story mixes fixed calendar days (site history on Jul 3 /
-        // Aug 12 / Sep 27, as in the mockup) with days relative to "today",
-        // so the mockup numbers only hold on the mockup's day. Freeze the
-        // clock there, exactly like the Flutter demo_data_store_test does.
-        $this->travelTo(\Illuminate\Support\Carbon::create(2026, 9, 29, 12));
+        return [
+            'mockup day' => ['2026-09-29 12:00'],
+            'real today' => [null],
+            'new year' => ['2026-12-31 23:00'],
+            'mid 2027' => ['2027-06-15 08:00'],
+        ];
+    }
+
+    /** @dataProvider storyDays */
+    public function test_dashboard_reproduces_the_demo_story(?string $day): void
+    {
+        if ($day !== null) {
+            $this->travelTo(\Illuminate\Support\Carbon::parse($day));
+        }
         $this->seed(\Database\Seeders\DemoSeeder::class);
         $this->actingAs(User::where('email', 'admin@inspectly.test')->first());
 
