@@ -49,3 +49,13 @@ extension InvalidateInspectionOnWidgetRef on WidgetRef {
     invalidate(inspectionActivitiesProvider(id));
   }
 }
+
+/// Same as [InvalidateInspectionOnWidgetRef], for code that finishes after
+/// its widget may be gone: capture the container *before* awaiting.
+extension InvalidateInspectionOnContainer on ProviderContainer {
+  void invalidateInspection(String id) {
+    invalidate(inspectionByIdProvider(id));
+    invalidate(inspectionListProvider);
+    invalidate(inspectionActivitiesProvider(id));
+  }
+}

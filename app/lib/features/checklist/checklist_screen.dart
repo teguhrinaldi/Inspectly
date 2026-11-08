@@ -97,14 +97,22 @@ class _WizardState extends ConsumerState<_Wizard> {
   Future<void> _saveNote() async {
     final text = _noteController.text.trim();
     if (!_editable || text == (item.note ?? '')) return;
-    await ref
-        .read(inspectionRepositoryProvider)
-        .updateChecklistItem(
-          inspectionId: inspection.id,
-          itemId: item.id,
-          note: text,
-        );
-    ref.invalidateInspection(inspection.id);
+    // Also runs when the screen is being left (focus lost on unmount), so
+    // everything needed after the await is captured first.
+    final repo = ref.read(inspectionRepositoryProvider);
+    final container = ProviderScope.containerOf(context, listen: false);
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final result = await repo.updateChecklistItem(
+      inspectionId: inspection.id,
+      itemId: item.id,
+      note: text,
+    );
+    if (!result.isSuccess) {
+      messenger?.showSnackBar(
+        const SnackBar(content: Text('Could not save the note.')),
+      );
+    }
+    container.invalidateInspection(inspection.id);
   }
 
   Future<void> _select(ChecklistResult result) async {
