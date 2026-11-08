@@ -57,6 +57,16 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->hasMany(Activity::class, 'actor_user_id');
     }
 
+    protected static function booted(): void
+    {
+        // Deactivation ends every API session of the account immediately.
+        static::updated(function (User $user) {
+            if ($user->wasChanged('status') && $user->status !== 'active') {
+                $user->tokens()->delete();
+            }
+        });
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
