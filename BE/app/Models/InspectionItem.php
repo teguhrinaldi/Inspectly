@@ -33,7 +33,8 @@ class InspectionItem extends Model
 
     public function templateChecklistItem(): BelongsTo
     {
-        return $this->belongsTo(TemplateChecklistItem::class);
+        // Includes items since removed from the template (help text etc.).
+        return $this->belongsTo(TemplateChecklistItem::class)->withTrashed();
     }
 
     public function findings(): HasMany

@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TemplateChecklistItem extends Model
 {
-    use HasFactory;
+    // Soft-deleted when removed from a template, so past inspections keep
+    // their link to the item (QC-024).
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'section_id',
