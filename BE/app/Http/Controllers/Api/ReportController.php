@@ -8,7 +8,6 @@ use App\Http\Resources\EvidenceResource;
 use App\Http\Resources\FindingResource;
 use App\Http\Resources\InspectionItemResource;
 use App\Http\Resources\SignatureResource;
-use App\Models\Activity;
 use App\Models\Inspection;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
@@ -36,13 +35,8 @@ class ReportController extends Controller
             'signatures',
         ]);
 
-        Activity::create([
-            'inspection_id' => $inspection->id,
-            'type' => Activity::TYPE_REPORT_GENERATED,
-            'description' => 'Report generated.',
-            'actor_user_id' => request()->user()?->id,
-            'occurred_at' => now(),
-        ]);
+        // Reading a report is side-effect free (QC-053); it no longer logs a
+        // "report generated" activity on every GET.
 
         return response()->json([
             'branding' => [
