@@ -15,6 +15,23 @@ const String apiBaseUrl = String.fromEnvironment(
   defaultValue: 'http://10.0.2.2:8000/api',
 );
 
+/// Why this build can't talk to the API, or null when the configuration is
+/// usable. Release builds in API mode must use HTTPS: Android blocks
+/// cleartext HTTP in release, and bearer tokens must not travel unencrypted.
+String? apiConfigProblem({
+  required bool useApi,
+  required String baseUrl,
+  required bool release,
+}) {
+  if (!useApi || !release) return null;
+  if (!baseUrl.startsWith('https://')) {
+    return 'This build points at $baseUrl. Release builds in API mode need '
+        'an https:// address: rebuild with '
+        '--dart-define=INSPECTLY_API_BASE_URL=https://your-domain/api';
+  }
+  return null;
+}
+
 /// Laravel's Eloquent models use auto-increment integer primary/foreign
 /// keys; every Flutter domain model treats every id as a `String` (so the
 /// same models work whether an id came from MySQL or was generated
