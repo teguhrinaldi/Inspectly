@@ -12,6 +12,12 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('login');
+        // API calls never redirect (there is no API login page); the
+        // exception handler turns them into a 401 JSON (QC-063).
+        if ($request->expectsJson() || $request->is('api/*')) {
+            return null;
+        }
+
+        return route('filament.admin.auth.login');
     }
 }
