@@ -16,9 +16,8 @@ class _SwitchableAuth implements AuthRepository {
   AppUser? current;
 
   @override
-  Future<Result<AppUser>> currentUser() async => current == null
-      ? const Failed(UnauthorizedFailure())
-      : Success(current!);
+  Future<Result<AppUser>> currentUser() async =>
+      current == null ? const Failed(UnauthorizedFailure()) : Success(current!);
   @override
   Future<bool> isLoggedIn() async => current != null;
   @override

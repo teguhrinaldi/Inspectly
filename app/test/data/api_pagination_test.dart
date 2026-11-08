@@ -47,7 +47,11 @@ class _SitesAdapter implements HttpClientAdapter {
     return ResponseBody.fromString(
       jsonEncode({
         'data': slice,
-        'meta': {'current_page': page, 'last_page': lastPage, 'per_page': perPage},
+        'meta': {
+          'current_page': page,
+          'last_page': lastPage,
+          'per_page': perPage,
+        },
       }),
       200,
       headers: {

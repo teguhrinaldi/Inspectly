@@ -36,18 +36,21 @@ class _HalfFailing implements EvidenceRepository {
 }
 
 void main() {
-  test('attachPhotos uploads every photo and reports how many failed', () async {
-    final repo = _HalfFailing();
-    final failed = await attachPhotos(
-      repo,
-      inspectionId: '1',
-      findingId: 'f1',
-      photos: [
-        for (var i = 0; i < 4; i++) CapturedPhoto('p$i.jpg', null, null),
-      ],
-    );
+  test(
+    'attachPhotos uploads every photo and reports how many failed',
+    () async {
+      final repo = _HalfFailing();
+      final failed = await attachPhotos(
+        repo,
+        inspectionId: '1',
+        findingId: 'f1',
+        photos: [
+          for (var i = 0; i < 4; i++) CapturedPhoto('p$i.jpg', null, null),
+        ],
+      );
 
-    expect(repo.calls, 4);
-    expect(failed, 2);
-  });
+      expect(repo.calls, 4);
+      expect(failed, 2);
+    },
+  );
 }

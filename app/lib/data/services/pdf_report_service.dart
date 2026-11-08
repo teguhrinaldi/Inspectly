@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -33,12 +34,14 @@ class PdfReportService {
     final findingEvidenceBytes = <String, Uint8List>{};
     for (final finding in inspection.findings) {
       for (final e in finding.evidence) {
-        findingEvidenceBytes[e.id] = await _loadBytes(e);
+        final bytes = await _loadBytes(e);
+        if (bytes != null) findingEvidenceBytes[e.id] = bytes;
       }
     }
     final signatureBytes = <String, Uint8List>{};
     for (final sig in inspection.signatures) {
-      signatureBytes[sig.id] = await _loadFileBytes(sig.displaySource);
+      final bytes = await _loadFileBytes(sig.displaySource);
+      if (bytes != null) signatureBytes[sig.id] = bytes;
     }
 
     doc.addPage(
@@ -370,27 +373,60 @@ class PdfReportService {
     );
   }
 
-  Future<Uint8List> _loadBytes(Evidence evidence) =>
+  Future<Uint8List?> _loadBytes(Evidence evidence) =>
       _loadFileBytes(evidence.displaySource);
 
-  Future<Uint8List> _loadFileBytes(String path) async {
+  /// Image bytes for the report, or null when the file is missing, the
+  /// server doesn't answer (in time) or the data isn't a JPEG/PNG — one bad
+  /// photo is left out instead of failing the whole report (QC-016).
+  Future<Uint8List?> _loadFileBytes(String path) async {
+    try {
+      final bytes = await _readBytes(path);
+      return _looksLikeImage(bytes) ? bytes : null;
+    } catch (e) {
+      debugPrint('PdfReportService: skipping image $path: $e');
+      return null;
+    }
+  }
+
+  Future<Uint8List> _readBytes(String path) async {
     if (path.startsWith('assets/')) {
       final data = await rootBundle.load(path);
       return data.buffer.asUint8List();
     }
     if (path.startsWith('http://') || path.startsWith('https://')) {
-      final client = HttpClient();
+      final client = HttpClient()
+        ..connectionTimeout = const Duration(seconds: 10);
       try {
-        final response = await (await client.getUrl(Uri.parse(path))).close();
+        final request = await client.getUrl(Uri.parse(path));
+        final response = await request.close().timeout(
+          const Duration(seconds: 20),
+        );
+        if (response.statusCode != HttpStatus.ok) {
+          throw HttpException(
+            'HTTP ${response.statusCode}',
+            uri: Uri.parse(path),
+          );
+        }
         final builder = BytesBuilder(copy: false);
-        await for (final chunk in response) {
+        await for (final chunk in response.timeout(
+          const Duration(seconds: 20),
+        )) {
           builder.add(chunk);
         }
         return builder.takeBytes();
       } finally {
-        client.close();
+        client.close(force: true);
       }
     }
     return File(path).readAsBytes();
   }
+
+  static bool _looksLikeImage(Uint8List b) =>
+      (b.length > 3 && b[0] == 0xFF && b[1] == 0xD8) || // JPEG
+      (b.length > 8 &&
+          b[0] == 0x89 &&
+          b[1] == 0x50 &&
+          b[2] == 0x4E &&
+          b[3] == 0x47); // PNG
 }

@@ -95,47 +95,43 @@ void main() {
   test('models accept the nullable fields the API can return', () {
     final finding = Finding.fromJson(
       normalizeIds({
-            'id': 7,
-            'inspection_id': 1,
-            'title': 'x',
-            'description': null,
-            'severity': 'low',
-          })
-          as Map<String, dynamic>,
+        'id': 7,
+        'inspection_id': 1,
+        'title': 'x',
+        'description': null,
+        'severity': 'low',
+      }) as Map<String, dynamic>,
     );
     expect(finding.description, '');
 
     final item = InspectionItem.fromJson(
       normalizeIds({
-            'id': 10,
-            'inspection_id': 1,
-            'template_checklist_item_id': null,
-            'label': 'x',
-          })
-          as Map<String, dynamic>,
+        'id': 10,
+        'inspection_id': 1,
+        'template_checklist_item_id': null,
+        'label': 'x',
+      }) as Map<String, dynamic>,
     );
     expect(item.templateChecklistItemId, '');
 
     final evidence = Evidence.fromJson(
       normalizeIds({
-            'id': 5,
-            'inspection_id': 1,
-            'file_path': 'a.jpg',
-            'captured_at': null,
-          })
-          as Map<String, dynamic>,
+        'id': 5,
+        'inspection_id': 1,
+        'file_path': 'a.jpg',
+        'captured_at': null,
+      }) as Map<String, dynamic>,
     );
     expect(evidence.capturedAt, isNull);
 
     final activity = ActivityEntry.fromJson(
       normalizeIds({
-            'id': 1,
-            'inspection_id': 1,
-            'type': 'started',
-            'description': null,
-            'occurred_at': '2026-09-27T09:00:00.000000Z',
-          })
-          as Map<String, dynamic>,
+        'id': 1,
+        'inspection_id': 1,
+        'type': 'started',
+        'description': null,
+        'occurred_at': '2026-09-27T09:00:00.000000Z',
+      }) as Map<String, dynamic>,
     );
     expect(activity.description, '');
   });
