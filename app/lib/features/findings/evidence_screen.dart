@@ -8,6 +8,7 @@ import '../../core/widgets/responsive_content.dart';
 import '../../core/widgets/status_style.dart';
 import '../../core/widgets/surfaces.dart';
 import '../../data/models/finding.dart';
+import '../../data/models/evidence.dart';
 import '../../data/models/inspection.dart';
 import 'findings_screen.dart';
 import 'widgets/finding_widgets.dart';
@@ -34,9 +35,13 @@ class EvidenceScreen extends ConsumerWidget {
           ),
         ),
         data: (inspection) => ResponsiveContent(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-            children: [EvidenceView(inspection: inspection)],
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                sliver: EvidenceView(inspection: inspection, sliver: true),
+              ),
+            ],
           ),
         ),
       ),
@@ -47,8 +52,15 @@ class EvidenceScreen extends ConsumerWidget {
 /// Segmented "By Finding" / "All Photos" evidence browser. Also embedded in
 /// the inspection detail "Evidence" tab.
 class EvidenceView extends StatefulWidget {
-  const EvidenceView({super.key, required this.inspection});
+  const EvidenceView({
+    super.key,
+    required this.inspection,
+    this.sliver = false,
+  });
   final Inspection inspection;
+
+  /// Build as a sliver: "All Photos" then becomes a lazy SliverGrid.
+  final bool sliver;
 
   @override
   State<EvidenceView> createState() => _EvidenceViewState();
@@ -63,7 +75,7 @@ class _EvidenceViewState extends State<EvidenceView> {
     final inspection = widget.inspection;
     final all = inspection.allEvidence;
 
-    return Column(
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
@@ -236,28 +248,49 @@ class _EvidenceViewState extends State<EvidenceView> {
             ),
             const SizedBox(height: 10),
           ],
-        ] else
-          LayoutBuilder(
-            builder: (context, c) {
-              final size = (c.maxWidth - 16) / 3;
-              return Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final (i, e) in all.indexed)
-                    EvidenceThumb(
-                      evidence: e,
-                      size: size,
-                      gallery: all,
-                      index: i,
-                    ),
-                ],
-              );
-            },
+        ] else if (!widget.sliver)
+          _grid(all),
+      ],
+    );
+    if (!widget.sliver) return content;
+    // Only the thumbnails on screen are built (QC-042).
+    return SliverMainAxisGroup(
+      slivers: [
+        SliverToBoxAdapter(child: content),
+        if (!_byFinding)
+          SliverGrid.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+            ),
+            itemCount: all.length,
+            itemBuilder: (context, i) => LayoutBuilder(
+              builder: (context, box) => EvidenceThumb(
+                evidence: all[i],
+                size: box.maxWidth,
+                gallery: all,
+                index: i,
+              ),
+            ),
           ),
       ],
     );
   }
+
+  Widget _grid(List<Evidence> all) => LayoutBuilder(
+    builder: (context, c) {
+      final size = (c.maxWidth - 16) / 3;
+      return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final (i, e) in all.indexed)
+            EvidenceThumb(evidence: e, size: size, gallery: all, index: i),
+        ],
+      );
+    },
+  );
 }
 
 /// Icon + title + "High · 2 photos" + location, compact.

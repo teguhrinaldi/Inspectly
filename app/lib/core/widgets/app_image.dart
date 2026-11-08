@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -40,6 +41,27 @@ class AppImage extends StatelessWidget {
     }
 
     if (src == null || src.isEmpty) return placeholder(context);
+    // Decode at roughly the size shown instead of the full photo (a 2000 px
+    // camera image in an 80 px thumbnail): 2x the longest side leaves room
+    // for a "cover" crop of up to 2:1 without blur (QC-042).
+    return LayoutBuilder(
+      builder: (context, box) {
+        final w = width ?? (box.hasBoundedWidth ? box.maxWidth : null);
+        final h = height ?? (box.hasBoundedHeight ? box.maxHeight : null);
+        final side = [w, h].whereType<double>().fold<double>(0, math.max);
+        final cache = side > 0 && side.isFinite
+            ? (side * MediaQuery.devicePixelRatioOf(context) * 2).round()
+            : null;
+        return _image(src, cache, placeholder);
+      },
+    );
+  }
+
+  Widget _image(
+    String src,
+    int? cacheWidth,
+    Widget Function(BuildContext, [Object?, StackTrace?]) placeholder,
+  ) {
     if (src.startsWith('assets/')) {
       return Image.asset(
         src,
@@ -47,6 +69,7 @@ class AppImage extends StatelessWidget {
         width: width,
         height: height,
         alignment: alignment,
+        cacheWidth: cacheWidth,
         errorBuilder: placeholder,
       );
     }
@@ -57,6 +80,7 @@ class AppImage extends StatelessWidget {
         width: width,
         height: height,
         alignment: alignment,
+        cacheWidth: cacheWidth,
         errorBuilder: placeholder,
       );
     }
@@ -66,6 +90,7 @@ class AppImage extends StatelessWidget {
       width: width,
       height: height,
       alignment: alignment,
+      cacheWidth: cacheWidth,
       errorBuilder: placeholder,
     );
   }
