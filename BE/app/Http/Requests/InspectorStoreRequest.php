@@ -18,7 +18,7 @@ class InspectorStoreRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email', 'unique:inspectors,email'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'password' => ['sometimes', 'string', 'min:6'],
+            'password' => ['sometimes', 'string', 'min:8'], // QC-022
             'avatar_url' => ['nullable', 'string', 'max:255'],
             'status' => ['sometimes', Rule::in(['active', 'inactive'])],
         ];

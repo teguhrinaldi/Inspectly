@@ -27,7 +27,7 @@ class InspectorUpdateRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore(is_object($inspector) ? $inspector->user_id : null),
             ],
             'phone' => ['nullable', 'string', 'max:50'],
-            'password' => ['sometimes', 'string', 'min:6'],
+            'password' => ['sometimes', 'string', 'min:8'], // QC-022
             'avatar_url' => ['nullable', 'string', 'max:255'],
             'status' => ['sometimes', Rule::in(['active', 'inactive'])],
         ];

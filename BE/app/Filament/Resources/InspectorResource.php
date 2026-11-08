@@ -43,7 +43,8 @@ class InspectorResource extends Resource
                     ->revealable()
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $context) => $context === 'create')
-                    ->helperText('Leave blank to keep the current password when editing.')
+                    ->helperText('At least 8 characters. Leave blank to keep the current password when editing.')
+                    ->minLength(8)
                     ->maxLength(255),
                 Forms\Components\Select::make('status')
                     ->options(['active' => 'Active', 'inactive' => 'Inactive'])
