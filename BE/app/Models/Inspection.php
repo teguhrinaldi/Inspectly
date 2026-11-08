@@ -11,6 +11,21 @@ class Inspection extends Model
 {
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        // Evidence/signature rows go with the inspection via the database
+        // cascade, which fires no model events: delete their files here so
+        // they don't stay behind on the public disk (QC-054).
+        static::deleting(function (Inspection $inspection) {
+            $paths = $inspection->evidence()->pluck('file_path')
+                ->merge($inspection->evidence()->pluck('watermarked_path'))
+                ->merge($inspection->signatures()->pluck('file_path'))
+                ->filter()
+                ->all();
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($paths);
+        });
+    }
+
     public const STATUS_DRAFT = 'draft';
 
     public const STATUS_SCHEDULED = 'scheduled';
