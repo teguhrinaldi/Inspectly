@@ -23,9 +23,7 @@ void main() {
   });
 
   test('items requiring evidence without a photo are reported', () {
-    final inspection = store.inspections.firstWhere(
-      (i) => i.items.isNotEmpty,
-    );
+    final inspection = store.inspections.firstWhere((i) => i.items.isNotEmpty);
     final item = inspection.items.first.copyWith(evidence: const []);
     final template = InspectionTemplate(
       id: inspection.templateId,

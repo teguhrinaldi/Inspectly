@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Evidence {
 
- String get id; String get inspectionId; String? get inspectionItemId; String? get findingId; String get filePath; String? get watermarkedPath; String? get fileUrl; double? get latitude; double? get longitude; DateTime? get capturedAt;
+ String get id; String get inspectionId; String? get inspectionItemId; String? get findingId; String get filePath; String? get watermarkedPath; String? get fileUrl; double? get latitude; double? get longitude; double? get accuracy; DateTime? get capturedAt;
 /// Create a copy of Evidence
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $EvidenceCopyWith<Evidence> get copyWith => _$EvidenceCopyWithImpl<Evidence>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as Evidence;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Evidence&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.inspectionId, _this.inspectionId) || other.inspectionId == _this.inspectionId)&&(identical(other.inspectionItemId, _this.inspectionItemId) || other.inspectionItemId == _this.inspectionItemId)&&(identical(other.findingId, _this.findingId) || other.findingId == _this.findingId)&&(identical(other.filePath, _this.filePath) || other.filePath == _this.filePath)&&(identical(other.watermarkedPath, _this.watermarkedPath) || other.watermarkedPath == _this.watermarkedPath)&&(identical(other.fileUrl, _this.fileUrl) || other.fileUrl == _this.fileUrl)&&(identical(other.latitude, _this.latitude) || other.latitude == _this.latitude)&&(identical(other.longitude, _this.longitude) || other.longitude == _this.longitude)&&(identical(other.capturedAt, _this.capturedAt) || other.capturedAt == _this.capturedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Evidence&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.inspectionId, _this.inspectionId) || other.inspectionId == _this.inspectionId)&&(identical(other.inspectionItemId, _this.inspectionItemId) || other.inspectionItemId == _this.inspectionItemId)&&(identical(other.findingId, _this.findingId) || other.findingId == _this.findingId)&&(identical(other.filePath, _this.filePath) || other.filePath == _this.filePath)&&(identical(other.watermarkedPath, _this.watermarkedPath) || other.watermarkedPath == _this.watermarkedPath)&&(identical(other.fileUrl, _this.fileUrl) || other.fileUrl == _this.fileUrl)&&(identical(other.latitude, _this.latitude) || other.latitude == _this.latitude)&&(identical(other.longitude, _this.longitude) || other.longitude == _this.longitude)&&(identical(other.accuracy, _this.accuracy) || other.accuracy == _this.accuracy)&&(identical(other.capturedAt, _this.capturedAt) || other.capturedAt == _this.capturedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Evidence;
-  return Object.hash(runtimeType,_this.id,_this.inspectionId,_this.inspectionItemId,_this.findingId,_this.filePath,_this.watermarkedPath,_this.fileUrl,_this.latitude,_this.longitude,_this.capturedAt);
+  return Object.hash(runtimeType,_this.id,_this.inspectionId,_this.inspectionItemId,_this.findingId,_this.filePath,_this.watermarkedPath,_this.fileUrl,_this.latitude,_this.longitude,_this.accuracy,_this.capturedAt);
 }
 
 @override
 String toString() {
   final _this = this as Evidence;
-  return 'Evidence(id: ${_this.id}, inspectionId: ${_this.inspectionId}, inspectionItemId: ${_this.inspectionItemId}, findingId: ${_this.findingId}, filePath: ${_this.filePath}, watermarkedPath: ${_this.watermarkedPath}, fileUrl: ${_this.fileUrl}, latitude: ${_this.latitude}, longitude: ${_this.longitude}, capturedAt: ${_this.capturedAt})';
+  return 'Evidence(id: ${_this.id}, inspectionId: ${_this.inspectionId}, inspectionItemId: ${_this.inspectionItemId}, findingId: ${_this.findingId}, filePath: ${_this.filePath}, watermarkedPath: ${_this.watermarkedPath}, fileUrl: ${_this.fileUrl}, latitude: ${_this.latitude}, longitude: ${_this.longitude}, accuracy: ${_this.accuracy}, capturedAt: ${_this.capturedAt})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $EvidenceCopyWith<$Res>  {
   factory $EvidenceCopyWith(Evidence value, $Res Function(Evidence) _then) = _$EvidenceCopyWithImpl;
 @useResult
 $Res call({
- String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, DateTime? capturedAt
+ String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, double? accuracy, DateTime? capturedAt
 });
 
 
@@ -71,7 +71,7 @@ class _$EvidenceCopyWithImpl<$Res>
 
 /// Create a copy of Evidence
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? capturedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? accuracy = freezed,Object? capturedAt = freezed,}) {
   return _then(Evidence(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,inspectionId: null == inspectionId ? _self.inspectionId : inspectionId // ignore: cast_nullable_to_non_nullable
@@ -82,6 +82,7 @@ as String,watermarkedPath: freezed == watermarkedPath ? _self.watermarkedPath : 
 as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,accuracy: freezed == accuracy ? _self.accuracy : accuracy // ignore: cast_nullable_to_non_nullable
 as double?,capturedAt: freezed == capturedAt ? _self.capturedAt : capturedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -168,10 +169,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime? capturedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  double? accuracy,  DateTime? capturedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Evidence() when $default != null:
-return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.capturedAt);case _:
+return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.accuracy,_that.capturedAt);case _:
   return orElse();
 
 }
@@ -189,10 +190,10 @@ return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.finding
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime? capturedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  double? accuracy,  DateTime? capturedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Evidence():
-return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.capturedAt);case _:
+return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.accuracy,_that.capturedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +210,10 @@ return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.finding
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  DateTime? capturedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String inspectionId,  String? inspectionItemId,  String? findingId,  String filePath,  String? watermarkedPath,  String? fileUrl,  double? latitude,  double? longitude,  double? accuracy,  DateTime? capturedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Evidence() when $default != null:
-return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.capturedAt);case _:
+return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.findingId,_that.filePath,_that.watermarkedPath,_that.fileUrl,_that.latitude,_that.longitude,_that.accuracy,_that.capturedAt);case _:
   return null;
 
 }
@@ -224,7 +225,7 @@ return $default(_that.id,_that.inspectionId,_that.inspectionItemId,_that.finding
 @JsonSerializable()
 
 class _Evidence implements Evidence {
-  const _Evidence({required this.id, required this.inspectionId, this.inspectionItemId, this.findingId, required this.filePath, this.watermarkedPath, this.fileUrl, this.latitude, this.longitude, this.capturedAt});
+  const _Evidence({required this.id, required this.inspectionId, this.inspectionItemId, this.findingId, required this.filePath, this.watermarkedPath, this.fileUrl, this.latitude, this.longitude, this.accuracy, this.capturedAt});
   factory _Evidence.fromJson(Map<String, dynamic> json) => _$EvidenceFromJson(json);
 
 @override final  String id;
@@ -236,6 +237,7 @@ class _Evidence implements Evidence {
 @override final  String? fileUrl;
 @override final  double? latitude;
 @override final  double? longitude;
+@override final  double? accuracy;
 @override final  DateTime? capturedAt;
 
 /// Create a copy of Evidence
@@ -251,18 +253,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Evidence&&(identical(other.id, id) || other.id == id)&&(identical(other.inspectionId, inspectionId) || other.inspectionId == inspectionId)&&(identical(other.inspectionItemId, inspectionItemId) || other.inspectionItemId == inspectionItemId)&&(identical(other.findingId, findingId) || other.findingId == findingId)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.watermarkedPath, watermarkedPath) || other.watermarkedPath == watermarkedPath)&&(identical(other.fileUrl, fileUrl) || other.fileUrl == fileUrl)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.capturedAt, capturedAt) || other.capturedAt == capturedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Evidence&&(identical(other.id, id) || other.id == id)&&(identical(other.inspectionId, inspectionId) || other.inspectionId == inspectionId)&&(identical(other.inspectionItemId, inspectionItemId) || other.inspectionItemId == inspectionItemId)&&(identical(other.findingId, findingId) || other.findingId == findingId)&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.watermarkedPath, watermarkedPath) || other.watermarkedPath == watermarkedPath)&&(identical(other.fileUrl, fileUrl) || other.fileUrl == fileUrl)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.accuracy, accuracy) || other.accuracy == accuracy)&&(identical(other.capturedAt, capturedAt) || other.capturedAt == capturedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,inspectionId,inspectionItemId,findingId,filePath,watermarkedPath,fileUrl,latitude,longitude,capturedAt);
+    return Object.hash(runtimeType,id,inspectionId,inspectionItemId,findingId,filePath,watermarkedPath,fileUrl,latitude,longitude,accuracy,capturedAt);
 }
 
 @override
 String toString() {
-    return 'Evidence(id: $id, inspectionId: $inspectionId, inspectionItemId: $inspectionItemId, findingId: $findingId, filePath: $filePath, watermarkedPath: $watermarkedPath, fileUrl: $fileUrl, latitude: $latitude, longitude: $longitude, capturedAt: $capturedAt)';
+    return 'Evidence(id: $id, inspectionId: $inspectionId, inspectionItemId: $inspectionItemId, findingId: $findingId, filePath: $filePath, watermarkedPath: $watermarkedPath, fileUrl: $fileUrl, latitude: $latitude, longitude: $longitude, accuracy: $accuracy, capturedAt: $capturedAt)';
 }
 
 
@@ -273,7 +275,7 @@ abstract mixin class _$EvidenceCopyWith<$Res> implements $EvidenceCopyWith<$Res>
   factory _$EvidenceCopyWith(_Evidence value, $Res Function(_Evidence) _then) = __$EvidenceCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, DateTime? capturedAt
+ String id, String inspectionId, String? inspectionItemId, String? findingId, String filePath, String? watermarkedPath, String? fileUrl, double? latitude, double? longitude, double? accuracy, DateTime? capturedAt
 });
 
 
@@ -290,7 +292,7 @@ class __$EvidenceCopyWithImpl<$Res>
 
 /// Create a copy of Evidence
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? capturedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? inspectionId = null,Object? inspectionItemId = freezed,Object? findingId = freezed,Object? filePath = null,Object? watermarkedPath = freezed,Object? fileUrl = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? accuracy = freezed,Object? capturedAt = freezed,}) {
   return _then(_Evidence(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,inspectionId: null == inspectionId ? _self.inspectionId : inspectionId // ignore: cast_nullable_to_non_nullable
@@ -301,6 +303,7 @@ as String,watermarkedPath: freezed == watermarkedPath ? _self.watermarkedPath : 
 as String?,fileUrl: freezed == fileUrl ? _self.fileUrl : fileUrl // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,accuracy: freezed == accuracy ? _self.accuracy : accuracy // ignore: cast_nullable_to_non_nullable
 as double?,capturedAt: freezed == capturedAt ? _self.capturedAt : capturedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));

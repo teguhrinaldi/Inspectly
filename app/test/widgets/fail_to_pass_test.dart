@@ -11,7 +11,9 @@ import '../helpers/pump_screen.dart';
 /// QC-062: turning a failed item into Pass asks whether its open finding
 /// should be closed, and closes it when the inspector agrees.
 void main() {
-  testWidgets('Fail → Pass offers to close the item\'s finding', (tester) async {
+  testWidgets('Fail → Pass offers to close the item\'s finding', (
+    tester,
+  ) async {
     final store = DemoDataStore.instance;
     final inspection = store.inspections.firstWhere(
       (i) =>
@@ -30,7 +32,8 @@ void main() {
       (it) =>
           it.result == ChecklistResult.fail &&
           inspection.findings.any(
-            (f) => f.inspectionItemId == it.id && f.status == FindingStatus.open,
+            (f) =>
+                f.inspectionItemId == it.id && f.status == FindingStatus.open,
           ),
     );
     final finding = inspection.findings.firstWhere(

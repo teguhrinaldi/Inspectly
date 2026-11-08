@@ -19,6 +19,7 @@ class _HalfFailing implements EvidenceRepository {
     required String localFilePath,
     double? latitude,
     double? longitude,
+    double? accuracy,
   }) async {
     calls++;
     if (calls.isEven) return const Failed(NetworkFailure());

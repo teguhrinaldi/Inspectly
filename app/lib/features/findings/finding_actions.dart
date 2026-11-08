@@ -85,6 +85,7 @@ Future<int> attachPhotos(
       localFilePath: photo.path,
       latitude: photo.latitude,
       longitude: photo.longitude,
+      accuracy: photo.accuracy,
     );
     if (!result.isSuccess) failed++;
   }
@@ -112,6 +113,7 @@ Future<void> addItemPhotoFlow(
     localFilePath: photo.path,
     latitude: photo.latitude,
     longitude: photo.longitude,
+    accuracy: photo.accuracy,
   );
   if (result.dataOrNull == null && context.mounted) {
     _showError(context, 'Could not save the photo.');

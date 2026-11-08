@@ -15,6 +15,8 @@ abstract class Evidence with _$Evidence {
     String? fileUrl,
     double? latitude,
     double? longitude,
+    // GPS accuracy radius in metres (QC-043).
+    double? accuracy,
     DateTime? capturedAt,
   }) = _Evidence;
 

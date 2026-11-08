@@ -173,6 +173,7 @@ class FindingDetailSheet extends ConsumerWidget {
         localFilePath: photo.path,
         latitude: photo.latitude,
         longitude: photo.longitude,
+        accuracy: photo.accuracy,
       );
       if (!result.isSuccess) {
         messenger?.showSnackBar(

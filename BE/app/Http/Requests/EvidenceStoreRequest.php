@@ -23,6 +23,7 @@ class EvidenceStoreRequest extends FormRequest
             'finding_id' => ['nullable', 'integer', Rule::exists('findings', 'id')->where('inspection_id', $this->integer('inspection_id'))],
             'lat' => ['nullable', 'numeric', 'between:-90,90'],
             'lng' => ['nullable', 'numeric', 'between:-180,180'],
+            'accuracy' => ['nullable', 'numeric', 'min:0', 'max:100000'],
         ];
     }
 }

@@ -20,12 +20,14 @@ class Evidence extends Model
         'watermarked_path',
         'latitude',
         'longitude',
+        'accuracy',
         'captured_at',
     ];
 
     protected $casts = [
         'latitude' => 'float',
         'longitude' => 'float',
+        'accuracy' => 'float',
         'captured_at' => 'datetime',
     ];
 

@@ -7,10 +7,18 @@ import '../../../data/services/evidence_capture_service.dart';
 import '../../../data/services/location_service.dart';
 
 class CapturedPhoto {
-  const CapturedPhoto(this.path, this.latitude, this.longitude);
+  const CapturedPhoto(
+    this.path,
+    this.latitude,
+    this.longitude, [
+    this.accuracy,
+  ]);
   final String path;
   final double? latitude;
   final double? longitude;
+
+  /// GPS accuracy in metres, if known (QC-043).
+  final double? accuracy;
 }
 
 /// Asks camera vs gallery, captures, tags GPS when permitted, and burns the
@@ -88,5 +96,10 @@ Future<CapturedPhoto?> capturePhoto(
     latitude: lat,
     longitude: lng,
   );
-  return CapturedPhoto(watermarked, lat, lng);
+  return CapturedPhoto(
+    watermarked,
+    lat,
+    lng,
+    location is LocationSuccess ? location.accuracy : null,
+  );
 }

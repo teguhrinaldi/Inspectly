@@ -27,6 +27,7 @@ class MockEvidenceRepository implements EvidenceRepository {
     required String localFilePath,
     double? latitude,
     double? longitude,
+    double? accuracy,
   }) async {
     if (!_store.mayWrite(inspectionId)) {
       return const Failed(
@@ -55,6 +56,7 @@ class MockEvidenceRepository implements EvidenceRepository {
         filePath: storedPath,
         latitude: latitude,
         longitude: longitude,
+        accuracy: accuracy,
         capturedAt: DateTime.now(),
       );
       _store.attachEvidence(evidence);

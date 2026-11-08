@@ -147,7 +147,7 @@ GET    /inspectors                POST/PUT admin-gated
 POST   /findings
 PUT    /findings/{id}
 
-POST   /evidence          (multipart: file, inspection_id, inspection_item_id?, finding_id?, lat?, lng?)
+POST   /evidence          (multipart: file, inspection_id, inspection_item_id?, finding_id?, lat?, lng?, accuracy?)  accuracy = GPS radius in metres
 DELETE /evidence/{id}
 POST   /signatures        (multipart: file, inspection_id, type, signer_name)
 

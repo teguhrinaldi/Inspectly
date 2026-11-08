@@ -19,6 +19,7 @@ class ApiEvidenceRepository implements EvidenceRepository {
     required String localFilePath,
     double? latitude,
     double? longitude,
+    double? accuracy,
   }) async {
     try {
       final evidence = await _client.guard(() async {
@@ -28,6 +29,7 @@ class ApiEvidenceRepository implements EvidenceRepository {
           'finding_id': ?findingId,
           'lat': ?latitude,
           'lng': ?longitude,
+          'accuracy': ?accuracy,
           'file': await MultipartFile.fromFile(localFilePath),
         });
         final response = await _client.dio.post('/evidence', data: form);

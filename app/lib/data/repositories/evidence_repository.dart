@@ -12,6 +12,7 @@ abstract interface class EvidenceRepository {
     required String localFilePath,
     double? latitude,
     double? longitude,
+    double? accuracy,
   });
 
   Future<Result<void>> remove(String evidenceId);

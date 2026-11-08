@@ -19,7 +19,9 @@ void main() {
       tester,
       InspectionDetailScreen(inspectionId: running.id),
       overrides: [
-        authRepositoryProvider.overrideWithValue(SignedInAs(running.inspectorId)),
+        authRepositoryProvider.overrideWithValue(
+          SignedInAs(running.inspectorId),
+        ),
       ],
     );
     await tester.pumpAndSettle();

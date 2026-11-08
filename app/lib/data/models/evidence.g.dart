@@ -16,6 +16,7 @@ _Evidence _$EvidenceFromJson(Map<String, dynamic> json) => _Evidence(
   fileUrl: json['file_url'] as String?,
   latitude: (json['latitude'] as num?)?.toDouble(),
   longitude: (json['longitude'] as num?)?.toDouble(),
+  accuracy: (json['accuracy'] as num?)?.toDouble(),
   capturedAt: json['captured_at'] == null
       ? null
       : DateTime.parse(json['captured_at'] as String),
@@ -31,5 +32,6 @@ Map<String, dynamic> _$EvidenceToJson(_Evidence instance) => <String, dynamic>{
   'file_url': instance.fileUrl,
   'latitude': instance.latitude,
   'longitude': instance.longitude,
+  'accuracy': instance.accuracy,
   'captured_at': instance.capturedAt?.toIso8601String(),
 };

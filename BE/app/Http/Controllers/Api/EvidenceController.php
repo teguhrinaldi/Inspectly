@@ -26,6 +26,7 @@ class EvidenceController extends Controller
             'file_path' => $path,
             'latitude' => $data['lat'] ?? null,
             'longitude' => $data['lng'] ?? null,
+            'accuracy' => $data['accuracy'] ?? null,
             'captured_at' => now(),
         ]);
 

@@ -21,6 +21,7 @@ class EvidenceResource extends JsonResource
             'watermarked_url' => $this->watermarked_path ? Storage::disk('public')->url($this->watermarked_path) : null,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
+            'accuracy' => $this->accuracy,
             'captured_at' => $this->captured_at,
         ];
     }
