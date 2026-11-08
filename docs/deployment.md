@@ -36,6 +36,9 @@ via `--dart-define=INSPECTLY_API_BASE_URL=...` (see `docs/installation.md` §4).
    environment — never seed fake customers/inspectors into a real production
    database).
 5. `php artisan storage:link` (evidence/signature file URLs depend on this).
+   Add the Laravel scheduler to cron (`* * * * * cd /path/to/BE && php artisan schedule:run`):
+   it prunes expired API tokens daily. App tokens expire after 30 days
+   (`SANCTUM_EXPIRATION`, in minutes); inspectors then simply sign in again.
 6. `php artisan config:cache && php artisan route:cache`
 7. Point your web server (Nginx/Apache) at `public/index.php` per Laravel's
    standard `.htaccess`/Nginx config (unchanged from stock Laravel — nothing

@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Remove expired API tokens (QC-003). Requires the scheduler cron:
+        // * * * * * php artisan schedule:run
+        $schedule->command('sanctum:prune-expired --hours=24')->daily();
     }
 
     /**

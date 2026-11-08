@@ -46,7 +46,9 @@ return [
     |
     */
 
-    'expiration' => null,
+    // API tokens of the mobile app expire after 30 days (QC-003); the
+    // inspector simply signs in again. Override with SANCTUM_EXPIRATION.
+    'expiration' => (int) env('SANCTUM_EXPIRATION', 60 * 24 * 30),
 
     /*
     |--------------------------------------------------------------------------
