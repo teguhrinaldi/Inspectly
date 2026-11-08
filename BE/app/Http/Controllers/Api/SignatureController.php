@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SignatureStoreRequest;
 use App\Http\Resources\SignatureResource;
 use App\Models\Activity;
+use App\Models\Inspection;
 use App\Models\Signature;
 use Illuminate\Http\JsonResponse;
 
@@ -14,6 +15,7 @@ class SignatureController extends Controller
     public function store(SignatureStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $this->authorize('write', Inspection::findOrFail($data['inspection_id']));
 
         $path = $request->file('file')->store('signatures/'.$data['inspection_id'], 'public');
 

@@ -21,6 +21,8 @@ import '../findings/findings_screen.dart';
 import '../findings/widgets/finding_widgets.dart';
 import 'widgets/notes_tab.dart';
 import '../../core/errors/failure.dart';
+import '../../app/providers/permissions.dart';
+import '../../app/providers/auth_providers.dart';
 
 class InspectionDetailScreen extends ConsumerWidget {
   const InspectionDetailScreen({super.key, required this.inspectionId});
@@ -121,6 +123,9 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
         context.go('/inspections/$id/summary');
     }
   }
+
+  bool get _canWrite =>
+      canWriteInspection(ref.watch(authStateProvider), inspection);
 
   String get _ctaLabel => switch (inspection.status) {
     InspectionStatus.draft || InspectionStatus.scheduled => 'Start Inspection',
@@ -334,18 +339,22 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
                 child: SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _starting ? null : _primaryAction,
-                    child: _starting
-                        ? const SizedBox.square(
-                            dimension: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(_ctaLabel),
-                  ),
+                  child:
+                      !_canWrite &&
+                          inspection.status != InspectionStatus.completed
+                      ? _ViewOnlyNote(inspectorName: inspection.inspectorName)
+                      : ElevatedButton(
+                          onPressed: _starting ? null : _primaryAction,
+                          child: _starting
+                              ? const SizedBox.square(
+                                  dimension: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Text(_ctaLabel),
+                        ),
                 ),
               ),
             ),
@@ -551,6 +560,31 @@ class _ChecklistSummary extends ConsumerWidget {
           const SizedBox(height: 10),
         ],
       ],
+    );
+  }
+}
+
+/// Shown instead of Start/Continue on another inspector's inspection.
+class _ViewOnlyNote extends StatelessWidget {
+  const _ViewOnlyNote({required this.inspectorName});
+  final String inspectorName;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return Container(
+      constraints: const BoxConstraints(minHeight: 50),
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: p.surfaceAlt,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Text(
+        'View only · assigned to $inspectorName',
+        textAlign: TextAlign.center,
+        style: TextStyle(color: p.textSecondary, fontWeight: FontWeight.w600),
+      ),
     );
   }
 }

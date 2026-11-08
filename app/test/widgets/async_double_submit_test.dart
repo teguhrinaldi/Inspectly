@@ -16,6 +16,7 @@ import 'package:inspectly/features/auth/login_screen.dart';
 import 'package:inspectly/features/checklist/checklist_screen.dart';
 import 'package:inspectly/features/checklist/widgets/finding_form_sheet.dart';
 
+import '../helpers/fake_auth.dart';
 import '../helpers/pump_screen.dart';
 
 /// QC-032: actions that wait on the network must not run twice when the
@@ -111,7 +112,12 @@ void main() {
     await pumpScreen(
       tester,
       ChecklistScreen(inspectionId: inspection.id),
-      overrides: [inspectionRepositoryProvider.overrideWithValue(_SlowNotes())],
+      overrides: [
+        authRepositoryProvider.overrideWithValue(
+          SignedInAs(inspection.inspectorId),
+        ),
+        inspectionRepositoryProvider.overrideWithValue(_SlowNotes()),
+      ],
     );
     await tester.pumpAndSettle();
     final before = RegExp(r'^(\d+) / ')
@@ -147,7 +153,12 @@ void main() {
     await pumpScreen(
       tester,
       ChecklistScreen(inspectionId: inspection.id),
-      overrides: [inspectionRepositoryProvider.overrideWithValue(repo)],
+      overrides: [
+        authRepositoryProvider.overrideWithValue(
+          SignedInAs(inspection.inspectorId),
+        ),
+        inspectionRepositoryProvider.overrideWithValue(repo),
+      ],
     );
     await tester.pumpAndSettle();
 

@@ -15,6 +15,8 @@ import 'finding_actions.dart';
 import 'widgets/finding_widgets.dart';
 import 'widgets/photo_capture.dart';
 import '../../core/errors/failure.dart';
+import '../../app/providers/permissions.dart';
+import '../../app/providers/auth_providers.dart';
 
 class FindingsScreen extends ConsumerWidget {
   const FindingsScreen({super.key, required this.inspectionId});
@@ -58,7 +60,9 @@ class FindingsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final p = context.palette;
-    final editable = inspection.status != InspectionStatus.completed;
+    final editable =
+        inspection.status != InspectionStatus.completed &&
+        canWriteInspection(ref.watch(authStateProvider), inspection);
     final findings = inspection.findings;
     final children = <Widget>[
       if (editable)
@@ -146,7 +150,9 @@ class FindingDetailSheet extends ConsumerWidget {
       );
     }
     final style = StatusStyle.forSeverity(finding.severity);
-    final editable = inspection.status != InspectionStatus.completed;
+    final editable =
+        inspection.status != InspectionStatus.completed &&
+        canWriteInspection(ref.watch(authStateProvider), inspection);
 
     // Read before any await: the sheet may be closed by then.
     final evidenceRepo = ref.read(evidenceRepositoryProvider);

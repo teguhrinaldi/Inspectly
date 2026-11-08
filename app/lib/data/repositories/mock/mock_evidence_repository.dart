@@ -28,6 +28,13 @@ class MockEvidenceRepository implements EvidenceRepository {
     double? latitude,
     double? longitude,
   }) async {
+    if (!_store.mayWrite(inspectionId)) {
+      return const Failed(
+        ForbiddenFailure(
+          'Only the assigned inspector can change this inspection.',
+        ),
+      );
+    }
     try {
       final docsDir = await getApplicationDocumentsDirectory();
       final evidenceDir = Directory(

@@ -9,6 +9,7 @@ import 'package:inspectly/data/repositories/inspection_repository.dart';
 import 'package:inspectly/data/repositories/mock/mock_inspection_repository.dart';
 import 'package:inspectly/features/checklist/checklist_screen.dart';
 
+import '../helpers/fake_auth.dart';
 import '../helpers/pump_screen.dart';
 
 /// QC-013: a typed note survives leaving the checklist, also when saving
@@ -51,7 +52,12 @@ void main() {
     final router = await pumpScreen(
       tester,
       ChecklistScreen(inspectionId: inspection.id),
-      overrides: [inspectionRepositoryProvider.overrideWithValue(_SlowNotes())],
+      overrides: [
+        authRepositoryProvider.overrideWithValue(
+          SignedInAs(inspection.inspectorId),
+        ),
+        inspectionRepositoryProvider.overrideWithValue(_SlowNotes()),
+      ],
     );
     await tester.pumpAndSettle();
 

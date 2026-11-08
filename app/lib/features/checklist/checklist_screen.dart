@@ -17,6 +17,8 @@ import '../findings/finding_actions.dart';
 import '../findings/widgets/finding_widgets.dart';
 import 'widgets/finding_form_sheet.dart';
 import '../../core/errors/failure.dart';
+import '../../app/providers/permissions.dart';
+import '../../app/providers/auth_providers.dart';
 
 /// One checklist item per page: result, photos and note, with
 /// Previous / Next. Finishing hands over to the signature step.
@@ -92,8 +94,9 @@ class _WizardState extends ConsumerState<_Wizard> {
   }
 
   bool get _editable =>
-      inspection.status == InspectionStatus.inProgress ||
-      inspection.status == InspectionStatus.review;
+      canWriteInspection(ref.read(authStateProvider), inspection) &&
+      (inspection.status == InspectionStatus.inProgress ||
+          inspection.status == InspectionStatus.review);
 
   Future<void> _saveNote() async {
     final text = _noteController.text.trim();

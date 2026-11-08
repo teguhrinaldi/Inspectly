@@ -22,6 +22,8 @@ import '../../data/models/inspection.dart';
 import '../../data/models/signature.dart';
 import '../../data/services/pdf_report_service.dart';
 import '../../core/errors/failure.dart';
+import '../../app/providers/permissions.dart';
+import '../../app/providers/auth_providers.dart';
 
 /// Inspector signature + customer acknowledgement. Once both are captured
 /// the inspection is completed and the risk summary opens.
@@ -45,7 +47,15 @@ class SignatureScreen extends ConsumerWidget {
                 ref.invalidate(inspectionByIdProvider(inspectionId)),
           ),
         ),
-        data: (inspection) => _SignatureBody(inspection: inspection),
+        data: (inspection) =>
+            canWriteInspection(ref.watch(authStateProvider), inspection)
+            ? _SignatureBody(inspection: inspection)
+            : EmptyState(
+                icon: LucideIcons.penLine,
+                title: 'View only',
+                message:
+                    'Only ${inspection.inspectorName} can sign this inspection.',
+              ),
       ),
     );
   }

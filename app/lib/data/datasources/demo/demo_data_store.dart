@@ -44,6 +44,18 @@ class DemoDataStore {
 
   static final DemoDataStore instance = DemoDataStore._internal();
 
+  /// Signed-in demo user (set by MockAuthRepository). Writes to another
+  /// inspector's inspection are refused, like the API does (QC-001).
+  String? currentUserId;
+
+  /// Whether the signed-in demo user may change [inspectionId].
+  bool mayWrite(String inspectionId) {
+    final user = currentUserId;
+    if (user == null) return true;
+    final inspection = findInspection(inspectionId);
+    return inspection == null || inspection.inspectorId == user;
+  }
+
   late List<Inspection> _inspections;
   late List<ActivityEntry> _activities;
   bool _restored = false;

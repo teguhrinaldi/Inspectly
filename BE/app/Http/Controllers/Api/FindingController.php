@@ -8,12 +8,15 @@ use App\Http\Requests\FindingUpdateRequest;
 use App\Http\Resources\FindingResource;
 use App\Models\Activity;
 use App\Models\Finding;
+use App\Models\Inspection;
 use Illuminate\Http\JsonResponse;
 
 class FindingController extends Controller
 {
     public function store(FindingStoreRequest $request): JsonResponse
     {
+        $this->authorize('write', Inspection::findOrFail($request->integer('inspection_id')));
+
         $finding = Finding::create($request->validated() + ['status' => $request->input('status', Finding::STATUS_OPEN)]);
 
         Activity::create([
@@ -29,6 +32,8 @@ class FindingController extends Controller
 
     public function update(FindingUpdateRequest $request, Finding $finding): JsonResponse
     {
+        $this->authorize('write', $finding->inspection);
+
         $finding->update($request->validated());
 
         return (new FindingResource($finding))->response();

@@ -21,6 +21,13 @@ class MockSignatureRepository implements SignatureRepository {
     required String signerName,
     required String localFilePath,
   }) async {
+    if (!DemoDataStore.instance.mayWrite(inspectionId)) {
+      return const Failed(
+        ForbiddenFailure(
+          'Only the assigned inspector can change this inspection.',
+        ),
+      );
+    }
     try {
       final docsDir = await getApplicationDocumentsDirectory();
       final signaturesDir = Directory(

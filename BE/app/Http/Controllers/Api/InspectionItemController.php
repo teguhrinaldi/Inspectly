@@ -15,6 +15,7 @@ class InspectionItemController extends Controller
     public function update(InspectionItemUpdateRequest $request, Inspection $inspection, InspectionItem $item): JsonResponse
     {
         abort_if($item->inspection_id !== $inspection->id, 404);
+        $this->authorize('write', $inspection);
 
         $item->update($request->validated());
 

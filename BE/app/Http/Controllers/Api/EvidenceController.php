@@ -7,6 +7,7 @@ use App\Http\Requests\EvidenceStoreRequest;
 use App\Http\Resources\EvidenceResource;
 use App\Models\Activity;
 use App\Models\Evidence;
+use App\Models\Inspection;
 use Illuminate\Http\JsonResponse;
 
 class EvidenceController extends Controller
@@ -14,6 +15,7 @@ class EvidenceController extends Controller
     public function store(EvidenceStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
+        $this->authorize('write', Inspection::findOrFail($data['inspection_id']));
 
         $path = $request->file('file')->store('evidence/'.$data['inspection_id'], 'public');
 
@@ -40,6 +42,8 @@ class EvidenceController extends Controller
 
     public function destroy(Evidence $evidence): JsonResponse
     {
+        $this->authorize('write', $evidence->inspection);
+
         if ($evidence->file_path) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($evidence->file_path);
         }

@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 
 import '../../../core/errors/failure.dart';
 import '../../../core/utils/result.dart';
+import '../../datasources/demo/demo_data_store.dart';
 import '../../datasources/demo/demo_reference_data.dart';
 import '../../models/app_user.dart';
 import '../auth_repository.dart';
@@ -31,12 +32,14 @@ class MockAuthRepository implements AuthRepository {
       return const Failed(UnauthorizedFailure('Incorrect email or password.'));
     }
     _current = user;
+    DemoDataStore.instance.currentUserId = user.id;
     return Success(user);
   }
 
   @override
   Future<Result<void>> logout() async {
     _current = null;
+    DemoDataStore.instance.currentUserId = null;
     return const Success(null);
   }
 

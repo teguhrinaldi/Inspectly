@@ -87,6 +87,8 @@ class InspectionController extends Controller
 
     public function start(Request $request, Inspection $inspection): JsonResponse
     {
+        $this->authorize('write', $inspection);
+
         $request->validate([
             'location_lat' => ['nullable', 'numeric', 'between:-90,90'],
             'location_lng' => ['nullable', 'numeric', 'between:-180,180'],
@@ -142,6 +144,8 @@ class InspectionController extends Controller
      */
     public function complete(Request $request, Inspection $inspection): JsonResponse
     {
+        $this->authorize('write', $inspection);
+
         DB::transaction(function () use ($inspection, $request) {
             // Row lock + re-read so a double tap or a network retry can't
             // complete twice and schedule two follow-up inspections.

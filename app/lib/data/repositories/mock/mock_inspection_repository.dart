@@ -82,6 +82,13 @@ class MockInspectionRepository implements InspectionRepository {
   }) async {
     final current = _store.findInspection(id);
     if (current == null) return const Failed(NotFoundFailure());
+    if (!_store.mayWrite(id)) {
+      return const Failed(
+        ForbiddenFailure(
+          'Only the assigned inspector can change this inspection.',
+        ),
+      );
+    }
     // Same rules as POST /inspections/{id}/start (QC-007).
     if (current.status == InspectionStatus.review ||
         current.status == InspectionStatus.completed) {
@@ -106,6 +113,13 @@ class MockInspectionRepository implements InspectionRepository {
     ChecklistResult? result,
     String? note,
   }) async {
+    if (!_store.mayWrite(inspectionId)) {
+      return const Failed(
+        ForbiddenFailure(
+          'Only the assigned inspector can change this inspection.',
+        ),
+      );
+    }
     try {
       return Success(
         _store.updateChecklistItem(
@@ -124,6 +138,13 @@ class MockInspectionRepository implements InspectionRepository {
   Future<Result<Inspection>> complete(String id) async {
     final current = _store.findInspection(id);
     if (current == null) return const Failed(NotFoundFailure());
+    if (!_store.mayWrite(id)) {
+      return const Failed(
+        ForbiddenFailure(
+          'Only the assigned inspector can change this inspection.',
+        ),
+      );
+    }
     // Same rules as POST /inspections/{id}/complete (QC-007).
     if (current.status == InspectionStatus.completed) return Success(current);
     if (current.items.any((item) => item.result == null)) {
@@ -147,6 +168,13 @@ class MockInspectionRepository implements InspectionRepository {
 
   @override
   Future<Result<Finding>> addFinding(Finding finding) async {
+    if (!_store.mayWrite(finding.inspectionId)) {
+      return const Failed(
+        ForbiddenFailure(
+          'Only the assigned inspector can change this inspection.',
+        ),
+      );
+    }
     try {
       final updated = _store.addFinding(finding);
       final saved = updated.findings.firstWhere((f) => f.id == finding.id);
@@ -158,6 +186,13 @@ class MockInspectionRepository implements InspectionRepository {
 
   @override
   Future<Result<Finding>> updateFinding(Finding finding) async {
+    if (!_store.mayWrite(finding.inspectionId)) {
+      return const Failed(
+        ForbiddenFailure(
+          'Only the assigned inspector can change this inspection.',
+        ),
+      );
+    }
     try {
       final updated = _store.updateFinding(finding);
       final saved = updated.findings.firstWhere((f) => f.id == finding.id);
