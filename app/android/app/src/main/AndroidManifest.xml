@@ -21,10 +21,24 @@
          (notification_service.dart), so no SCHEDULE_EXACT_ALARM permission
          is needed; a reminder landing a few minutes late is fine. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Lets flutter_local_notifications re-register scheduled reminders
+         after a reboot or an app update (plugin README, "Scheduling"). -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:label="inspectly"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- Required for zonedSchedule() reminders to actually be shown
+             (flutter_local_notifications does not declare these itself). -->
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".MainActivity"
             android:exported="true"
