@@ -132,21 +132,36 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
       if (mounted) {
         setState(() {
           _starting = false;
-          _error = 'Could not create the inspection.';
+          _error = created.when(
+            success: (_) => 'Could not create the inspection.',
+            failure: (f) => f.message,
+          );
         });
       }
       return;
     }
     final location = await LocationService().getCurrentLocation();
-    await repo.start(
+    final started = await repo.start(
       inspection.id,
       locationLat: location is LocationSuccess ? location.latitude : null,
       locationLng: location is LocationSuccess ? location.longitude : null,
     );
     container.invalidateInspection(inspection.id);
     if (!mounted) return;
+    final startError = started.when(
+      success: (_) => null,
+      failure: (f) => f.message,
+    );
     context.go('/inspections/${inspection.id}');
-    context.push('/checklist/${inspection.id}');
+    if (startError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Inspection created, but not started: $startError'),
+        ),
+      );
+    } else {
+      context.push('/checklist/${inspection.id}');
+    }
   }
 
   @override

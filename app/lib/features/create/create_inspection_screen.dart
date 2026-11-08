@@ -99,17 +99,30 @@ class _CreateInspectionScreenState
       if (mounted) {
         setState(() => _saving = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not create the inspection.')),
+          SnackBar(
+            content: Text(
+              created.when(
+                success: (_) => 'Could not create the inspection.',
+                failure: (f) => f.message,
+              ),
+            ),
+          ),
         );
       }
       return;
     }
-    if (!_scheduleLater) {
+    final startNow = !_scheduleLater;
+    String? startError;
+    if (startNow) {
       final location = await LocationService().getCurrentLocation();
-      await repo.start(
+      final started = await repo.start(
         inspection.id,
         locationLat: location is LocationSuccess ? location.latitude : null,
         locationLng: location is LocationSuccess ? location.longitude : null,
+      );
+      startError = started.when(
+        success: (_) => null,
+        failure: (f) => f.message,
       );
     }
     container.invalidateInspection(inspection.id);
@@ -120,7 +133,17 @@ class _CreateInspectionScreenState
       _templateId = null;
     });
     context.go('/inspections/${inspection.id}');
-    if (!_scheduleLater) context.push('/checklist/${inspection.id}');
+    if (startError != null) {
+      // Created but not started: say why and stay on the detail screen,
+      // where it can be started again (QC-035).
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Inspection created, but not started: $startError'),
+        ),
+      );
+    } else if (startNow) {
+      context.push('/checklist/${inspection.id}');
+    }
   }
 
   @override

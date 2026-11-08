@@ -94,7 +94,14 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
         setState(() => _starting = false);
         if (result.dataOrNull == null) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not start the inspection.')),
+            SnackBar(
+              content: Text(
+                result.when(
+                  success: (_) => 'Could not start the inspection.',
+                  failure: (f) => f.message,
+                ),
+              ),
+            ),
           );
           return;
         }
