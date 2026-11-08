@@ -11,6 +11,7 @@ import '../../core/widgets/responsive_content.dart';
 import '../../core/widgets/status_style.dart';
 import '../../core/widgets/surfaces.dart';
 import '../../data/models/enums.dart';
+import '../../data/models/finding.dart';
 import '../../data/models/inspection.dart';
 import '../../data/models/inspection_item.dart';
 import '../findings/finding_actions.dart';
@@ -141,6 +142,48 @@ class _WizardState extends ConsumerState<_Wizard> {
       }
       setState(() => _pending[target.id] = result);
       final repo = ref.read(inspectionRepositoryProvider);
+      // Fail -> Pass: offer to close the finding raised for this item (QC-062).
+      final openFindings =
+          current == ChecklistResult.fail && result == ChecklistResult.pass
+          ? inspection.findings
+                .where(
+                  (f) =>
+                      f.inspectionItemId == target.id &&
+                      f.status == FindingStatus.open,
+                )
+                .toList()
+          : const <Finding>[];
+      if (openFindings.isNotEmpty && mounted) {
+        final close = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Close the finding?'),
+            content: Text(
+              'This item passes now. Close '
+              '${openFindings.length == 1 ? 'the finding "${openFindings.first.title}"' : 'its ${openFindings.length} open findings'}'
+              ' as resolved?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Keep open'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Close finding'),
+              ),
+            ],
+          ),
+        );
+        if (close == true) {
+          for (final f in openFindings) {
+            await repo.updateFinding(
+              f.copyWith(status: FindingStatus.resolved),
+            );
+          }
+        }
+        if (!mounted) return;
+      }
       final container = ProviderScope.containerOf(context, listen: false);
       final res = await repo.updateChecklistItem(
         inspectionId: inspection.id,
