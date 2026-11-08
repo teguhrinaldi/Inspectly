@@ -341,24 +341,42 @@ class _WizardState extends ConsumerState<_Wizard> {
                         color: p.textPrimary,
                       ),
                     ),
-                    const Spacer(),
-                    OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(0, 50),
-                        side: BorderSide(color: p.border),
-                        foregroundColor: p.textPrimary,
+                    const SizedBox(width: 12),
+                    // Right-aligned like before, but scaled down instead of
+                    // overflowing on narrow phones with large text.
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  minimumSize: const Size(0, 50),
+                                  side: BorderSide(color: p.border),
+                                  foregroundColor: p.textPrimary,
+                                ),
+                                onPressed: _index == 0 ? null : () => _go(-1),
+                                icon: const Icon(
+                                  LucideIcons.arrowLeft,
+                                  size: 18,
+                                ),
+                                label: const Text('Previous'),
+                              ),
+                              const SizedBox(width: 10),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(96, 50),
+                                ),
+                                onPressed: _busy ? null : () => _go(1),
+                                child: Text(isLast ? 'Finish' : 'Next'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      onPressed: _index == 0 ? null : () => _go(-1),
-                      icon: const Icon(LucideIcons.arrowLeft, size: 18),
-                      label: const Text('Previous'),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(96, 50),
-                      ),
-                      onPressed: _busy ? null : () => _go(1),
-                      child: Text(isLast ? 'Finish' : 'Next'),
                     ),
                   ],
                 ),

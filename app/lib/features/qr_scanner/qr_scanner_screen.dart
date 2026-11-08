@@ -209,37 +209,60 @@ class _QrScannerScreenState extends ConsumerState<QrScannerScreen> {
                             ],
                           ),
                         ),
-                        const Spacer(),
-                        const SizedBox.square(
-                          dimension: 230,
-                          child: CustomPaint(painter: _FramePainter()),
-                        ),
-                        const SizedBox(height: 22),
-                        const Text(
-                          'Scan Site QR Code',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                        // Centered as before; scaled down when the camera
+                        // area is short (small phones, landscape).
+                        const Expanded(
+                          child: Center(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox.square(
+                                    dimension: 230,
+                                    child: CustomPaint(
+                                      painter: _FramePainter(),
+                                    ),
+                                  ),
+                                  SizedBox(height: 22),
+                                  Text(
+                                    'Scan Site QR Code',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        const Spacer(),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            _BottomPanel(
-              site: _site,
-              handling: _handling,
-              starting: _starting,
-              error: _error,
-              selectedTemplateId: _templateId,
-              onSelectTemplate: (id) => setState(() => _templateId = id),
-              onStart: _start,
-              onManual: _enterManually,
-              onRescan: _rescan,
+            // At most ~60% of the screen; scrolls on short screens instead
+            // of pushing the camera area into an overflow.
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * 0.6,
+              ),
+              child: SingleChildScrollView(
+                child: _BottomPanel(
+                  site: _site,
+                  handling: _handling,
+                  starting: _starting,
+                  error: _error,
+                  selectedTemplateId: _templateId,
+                  onSelectTemplate: (id) => setState(() => _templateId = id),
+                  onStart: _start,
+                  onManual: _enterManually,
+                  onRescan: _rescan,
+                ),
+              ),
             ),
           ],
         ),
