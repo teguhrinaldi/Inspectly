@@ -47,4 +47,18 @@ class InactiveAccountAccessTest extends TestCase
 
         $this->assertSame(0, $user->tokens()->count());
     }
+
+    public function test_deleting_an_inspector_profile_deactivates_the_login(): void
+    {
+        [$user, $inspector, $token] = $this->inspectorWithToken();
+
+        $inspector->delete();
+
+        $this->assertSame('inactive', $user->fresh()->status);
+        $this->assertSame(0, $user->tokens()->count());
+        $this->app['auth']->forgetGuards();
+        $this->withToken($token)->getJson('/api/me')->assertUnauthorized();
+        $this->postJson('/api/login', ['email' => $user->email, 'password' => 'password'])
+            ->assertStatus(422);
+    }
 }

@@ -20,6 +20,16 @@ class Inspector extends Model
         'status',
     ];
 
+    protected static function booted(): void
+    {
+        // Removing the profile (Filament "Delete") must not leave a working
+        // login behind. The user row itself stays, because past inspections
+        // still reference it.
+        static::deleting(function (Inspector $inspector) {
+            $inspector->user?->update(['status' => 'inactive']);
+        });
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
