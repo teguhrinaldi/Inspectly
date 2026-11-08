@@ -495,7 +495,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     keyboardType: TextInputType.emailAddress,
     autofillHints: const [AutofillHints.email],
     decoration: _field('Email', LucideIcons.mail),
-    validator: (v) => (v == null || v.isEmpty) ? 'Enter your email' : null,
+    validator: (v) {
+      final email = v?.trim() ?? '';
+      if (email.isEmpty) return 'Enter your email';
+      if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
+        return 'Enter a valid email address';
+      }
+      return null;
+    },
   );
 
   Widget _passwordField() => TextFormField(

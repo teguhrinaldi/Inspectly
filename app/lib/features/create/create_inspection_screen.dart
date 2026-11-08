@@ -58,7 +58,8 @@ class _CreateInspectionScreenState
   Future<void> _pickDateTime() async {
     final date = await showDatePicker(
       context: context,
-      initialDate: _when,
+      // _when can lie in the past if this tab stayed open past midnight.
+      initialDate: _when.isBefore(DateTime.now()) ? DateTime.now() : _when,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 730)),
     );
@@ -67,16 +68,21 @@ class _CreateInspectionScreenState
       context: context,
       initialTime: TimeOfDay.fromDateTime(_when),
     );
-    if (time == null) return;
-    setState(
-      () => _when = DateTime(
-        date.year,
-        date.month,
-        date.day,
-        time.hour,
-        time.minute,
-      ),
+    if (time == null || !mounted) return;
+    final picked = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
     );
+    final problem = scheduleProblem(picked, DateTime.now());
+    if (problem != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(problem)));
+      return;
+    }
+    setState(() => _when = picked);
   }
 
   Future<void> _submit(List<Site> sites) async {
@@ -534,3 +540,7 @@ class _Choice extends StatelessWidget {
     );
   }
 }
+
+/// Why [when] can't be used as a schedule, or null when it's fine.
+String? scheduleProblem(DateTime when, DateTime now) =>
+    when.isBefore(now) ? 'Pick a date and time in the future.' : null;
