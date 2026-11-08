@@ -70,6 +70,7 @@ class _WizardState extends ConsumerState<_Wizard> {
   final _noteController = TextEditingController();
   final Map<String, ChecklistResult> _pending = {};
   bool _busy = false;
+  bool _navigating = false;
 
   Inspection get inspection => widget.inspection;
   List<InspectionItem> get items =>
@@ -120,43 +121,54 @@ class _WizardState extends ConsumerState<_Wizard> {
     final current = _pending[item.id] ?? item.result;
     if (current == result) return;
     final target = item;
-    if (result == ChecklistResult.fail) {
-      final saved = await addFindingFlow(
-        context,
-        ref,
-        inspection,
-        itemId: target.id,
-        itemLabel: target.label,
-      );
-      if (!saved) return;
-    }
-    setState(() {
-      _pending[target.id] = result;
-      _busy = true;
-    });
-    final res = await ref
-        .read(inspectionRepositoryProvider)
-        .updateChecklistItem(
-          inspectionId: inspection.id,
+    // Busy from the first tap: a Fail tapped again while the finding (and
+    // its photos) is still uploading must not open a second form (QC-032).
+    setState(() => _busy = true);
+    try {
+      if (result == ChecklistResult.fail) {
+        final saved = await addFindingFlow(
+          context,
+          ref,
+          inspection,
           itemId: target.id,
-          result: result,
+          itemLabel: target.label,
         );
-    ref.invalidateInspection(inspection.id);
-    if (!mounted) return;
-    setState(() => _busy = false);
-    if (res.dataOrNull == null) {
-      setState(() => _pending.remove(target.id));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not save this answer.')),
+        if (!saved || !mounted) return;
+      }
+      setState(() => _pending[target.id] = result);
+      final repo = ref.read(inspectionRepositoryProvider);
+      final container = ProviderScope.containerOf(context, listen: false);
+      final res = await repo.updateChecklistItem(
+        inspectionId: inspection.id,
+        itemId: target.id,
+        result: result,
       );
+      container.invalidateInspection(inspection.id);
+      if (!mounted) return;
+      if (res.dataOrNull == null) {
+        setState(() => _pending.remove(target.id));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not save this answer.')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
   Future<void> _go(int delta) async {
-    await _saveNote();
+    // A second tap while the note is still saving would otherwise advance
+    // from the already-advanced index and skip an item (QC-032).
+    if (_navigating) return;
     final next = _index + delta;
+    _navigating = true;
+    try {
+      await _saveNote();
+    } finally {
+      _navigating = false;
+    }
+    if (!mounted) return;
     if (next >= items.length) {
-      if (!mounted) return;
       final unanswered = items
           .where((i) => (_pending[i.id] ?? i.result) == null)
           .length;
