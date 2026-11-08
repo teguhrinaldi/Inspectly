@@ -24,6 +24,7 @@ import '../../data/services/pdf_report_service.dart';
 import '../../core/errors/failure.dart';
 import '../../app/providers/permissions.dart';
 import '../../app/providers/auth_providers.dart';
+import '../../core/utils/completion_rules.dart';
 
 /// Inspector signature + customer acknowledgement. Once both are captured
 /// the inspection is completed and the risk summary opens.
@@ -117,6 +118,18 @@ class _SignatureBodyState extends ConsumerState<_SignatureBody> {
   }
 
   Future<void> _save() async {
+    for (final pad in [_inspectorPad, _customerPad]) {
+      if (pad.isNotEmpty && !signatureIsLongEnough(_strokes(pad))) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'That signature is too short. Please sign again, a full signature.',
+            ),
+          ),
+        );
+        return;
+      }
+    }
     setState(() => _saving = true);
     // Captured before any await: the user may leave while saving.
     final repo = ref.read(signatureRepositoryProvider);
@@ -148,7 +161,11 @@ class _SignatureBodyState extends ConsumerState<_SignatureBody> {
           signed.contains(SignatureType.customer);
       if (complete && fresh!.status != InspectionStatus.completed) {
         final done = await inspectionRepo.complete(inspection.id);
-        if (done.dataOrNull == null) throw StateError('complete failed');
+        final reason = done.when(
+          success: (_) => null,
+          failure: (f) => f.message,
+        );
+        if (reason != null) throw _CompleteRefused(reason);
       }
       container.invalidateInspection(inspection.id);
       if (!mounted) return;
@@ -167,7 +184,13 @@ class _SignatureBodyState extends ConsumerState<_SignatureBody> {
       debugPrint('SignatureScreen: save failed: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not save the signature.')),
+          SnackBar(
+            content: Text(
+              e is _CompleteRefused
+                  ? 'Signatures saved, but the inspection was not completed: ${e.reason}'
+                  : 'Could not save the signature.',
+            ),
+          ),
         );
       }
     } finally {
@@ -348,4 +371,17 @@ class _SignatureBlock extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Points of a signature pad in drawing order; `null` = pen lifted.
+List<Offset?> _strokes(SignatureController pad) => [
+  for (final (i, point) in pad.points.indexed) ...[
+    if (i > 0 && point.type == PointType.tap) null,
+    point.offset,
+  ],
+];
+
+class _CompleteRefused implements Exception {
+  _CompleteRefused(this.reason);
+  final String reason;
 }

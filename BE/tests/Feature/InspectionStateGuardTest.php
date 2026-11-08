@@ -102,4 +102,51 @@ class InspectionStateGuardTest extends TestCase
             'status' => Inspection::STATUS_COMPLETED,
         ])->assertStatus(422)->assertJsonValidationErrors('status');
     }
+
+    public function test_only_an_inspection_in_progress_can_be_completed(): void
+    {
+        foreach ([Inspection::STATUS_DRAFT, Inspection::STATUS_SCHEDULED] as $status) {
+            $inspection = $this->inspection($status);
+            $this->postJson("/api/inspections/{$inspection->id}/complete")->assertStatus(409);
+            $this->assertSame($status, $inspection->fresh()->status);
+        }
+    }
+
+    public function test_items_requiring_evidence_need_a_photo_before_completing(): void
+    {
+        $inspection = $this->inspection(Inspection::STATUS_IN_PROGRESS);
+        $item = $inspection->items()->first();
+        $item->templateChecklistItem->update(['requires_evidence' => true]);
+
+        $this->postJson("/api/inspections/{$inspection->id}/complete")
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('items');
+
+        \App\Models\Evidence::create([
+            'inspection_id' => $inspection->id,
+            'inspection_item_id' => $item->id,
+            'file_path' => 'evidence/x.jpg',
+            'captured_at' => now(),
+        ]);
+        $this->postJson("/api/inspections/{$inspection->id}/complete")->assertOk();
+    }
+
+    public function test_a_photo_on_the_items_finding_also_counts_as_evidence(): void
+    {
+        $inspection = $this->inspection(Inspection::STATUS_IN_PROGRESS);
+        $item = $inspection->items()->first();
+        $item->templateChecklistItem->update(['requires_evidence' => true]);
+        $finding = \App\Models\Finding::factory()->create([
+            'inspection_id' => $inspection->id,
+            'inspection_item_id' => $item->id,
+        ]);
+        \App\Models\Evidence::create([
+            'inspection_id' => $inspection->id,
+            'finding_id' => $finding->id,
+            'file_path' => 'evidence/y.jpg',
+            'captured_at' => now(),
+        ]);
+
+        $this->postJson("/api/inspections/{$inspection->id}/complete")->assertOk();
+    }
 }

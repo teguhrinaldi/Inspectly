@@ -6,6 +6,7 @@ import '../../models/enums.dart';
 import '../../models/finding.dart';
 import '../../models/inspection.dart';
 import '../inspection_repository.dart';
+import '../../../core/utils/completion_rules.dart';
 
 class MockInspectionRepository implements InspectionRepository {
   final DemoDataStore _store = DemoDataStore.instance;
@@ -147,6 +148,26 @@ class MockInspectionRepository implements InspectionRepository {
     }
     // Same rules as POST /inspections/{id}/complete (QC-007).
     if (current.status == InspectionStatus.completed) return Success(current);
+    if (current.status != InspectionStatus.inProgress) {
+      return const Failed(
+        ConflictFailure(
+          'Only an inspection in progress can be completed. Start it first.',
+        ),
+      );
+    }
+    final missing = itemsMissingEvidence(
+      current,
+      _store.templates.where((t) => t.id == current.templateId).firstOrNull,
+    );
+    if (missing.isNotEmpty) {
+      final message =
+          'These items need at least one photo: ${missing.join(', ')}.';
+      return Failed(
+        ValidationFailure({
+          'items': [message],
+        }, message),
+      );
+    }
     if (current.items.any((item) => item.result == null)) {
       return const Failed(
         ValidationFailure(

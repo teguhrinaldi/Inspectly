@@ -156,9 +156,35 @@ class InspectionController extends Controller
                 return;
             }
 
+            // Only work that is actually running can be completed (QC-007).
+            abort_if(
+                $inspection->status !== Inspection::STATUS_IN_PROGRESS,
+                409,
+                'Only an inspection in progress can be completed. Start it first.'
+            );
+
             if ($inspection->items->contains(fn (InspectionItem $item) => $item->result === null)) {
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'items' => ['Every checklist item needs a result before the inspection can be completed.'],
+                ]);
+            }
+
+            // Items whose template asks for photo evidence need at least one
+            // photo, on the item itself or on a finding raised for it (QC-036).
+            $inspection->load(['items.templateChecklistItem', 'items.evidence', 'findings.evidence']);
+            $missing = $inspection->items->filter(function (InspectionItem $item) use ($inspection) {
+                if (! $item->templateChecklistItem?->requires_evidence) {
+                    return false;
+                }
+                $onFindings = $inspection->findings
+                    ->where('inspection_item_id', $item->id)
+                    ->sum(fn ($finding) => $finding->evidence->count());
+
+                return $item->evidence->isEmpty() && $onFindings === 0;
+            });
+            if ($missing->isNotEmpty()) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'items' => ['These items need at least one photo: '.$missing->pluck('label')->join(', ').'.'],
                 ]);
             }
 

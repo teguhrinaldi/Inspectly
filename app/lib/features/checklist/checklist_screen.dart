@@ -19,6 +19,7 @@ import 'widgets/finding_form_sheet.dart';
 import '../../core/errors/failure.dart';
 import '../../app/providers/permissions.dart';
 import '../../app/providers/auth_providers.dart';
+import '../../core/utils/completion_rules.dart';
 
 /// One checklist item per page: result, photos and note, with
 /// Previous / Next. Finishing hands over to the signature step.
@@ -187,6 +188,20 @@ class _WizardState extends ConsumerState<_Wizard> {
           _index = items.indexWhere(
             (i) => (_pending[i.id] ?? i.result) == null,
           );
+          _noteController.text = item.note ?? '';
+        });
+        return;
+      }
+      final template = ref
+          .read(templateByIdProvider(inspection.templateId))
+          .value;
+      final missing = itemsMissingEvidence(inspection, template);
+      if (missing.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Add a photo first: ${missing.join(', ')}.')),
+        );
+        setState(() {
+          _index = items.indexWhere((i) => i.label == missing.first);
           _noteController.text = item.note ?? '';
         });
         return;

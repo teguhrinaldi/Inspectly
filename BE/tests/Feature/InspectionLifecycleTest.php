@@ -113,6 +113,7 @@ class InspectionLifecycleTest extends TestCase
     public function test_complete_computes_pass_percentage_excluding_na(): void
     {
         $inspection = $this->makeInspectionWithItems(4);
+        $inspection->update(['status' => Inspection::STATUS_IN_PROGRESS]);
         $items = $inspection->items()->orderBy('sort_order')->get();
 
         // 2 pass, 1 fail, 1 na -> pass% = 2 / (2+1) = 66.67 -> rounds to 67, NA excluded from denominator.
@@ -143,7 +144,7 @@ class InspectionLifecycleTest extends TestCase
     public function test_complete_with_recurrence_schedules_next_inspection(): void
     {
         $inspection = $this->makeInspectionWithItems(2);
-        $inspection->update(['recurrence' => Inspection::RECURRENCE_MONTHLY]);
+        $inspection->update(['recurrence' => Inspection::RECURRENCE_MONTHLY, 'status' => Inspection::STATUS_IN_PROGRESS]);
         $inspection->items->each(fn ($item) => $item->update(['result' => 'pass']));
 
         Sanctum::actingAs($inspection->inspector);

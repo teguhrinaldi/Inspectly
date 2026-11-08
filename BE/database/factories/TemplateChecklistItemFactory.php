@@ -16,7 +16,7 @@ class TemplateChecklistItemFactory extends Factory
             'section_id' => TemplateSection::factory(),
             'label' => fake()->sentence(4),
             'help_text' => fake()->optional()->sentence(),
-            'requires_evidence' => fake()->boolean(30),
+            'requires_evidence' => false, // deterministic; tests opt in explicitly
             'sort_order' => 0,
         ];
     }
