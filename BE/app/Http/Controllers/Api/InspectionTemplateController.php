@@ -23,7 +23,9 @@ class InspectionTemplateController extends Controller
             $query->where('category', $request->string('category'));
         }
 
-        if ($request->boolean('active_only')) {
+        // `active` is the documented name (docs/api.md, used by the app);
+        // `active_only` is kept for existing integrations.
+        if ($request->boolean('active') || $request->boolean('active_only')) {
             $query->where('is_active', true);
         }
 
