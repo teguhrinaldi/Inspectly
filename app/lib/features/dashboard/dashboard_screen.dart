@@ -33,14 +33,17 @@ class DashboardScreen extends ConsumerWidget {
     try {
       final granted = await NotificationService.instance.requestPermission();
       if (!granted) return;
+      final plan = reminderPlan(all);
       for (final inspection in all) {
-        if (inspection.status != InspectionStatus.scheduled) continue;
-        final at = inspection.scheduledAt;
-        if (at == null) continue;
+        final remindAt = plan.schedule[inspection.id];
+        if (remindAt == null) continue;
         await NotificationService.instance.scheduleInspectionReminder(
           inspection: inspection,
-          remindAt: DateTime(at.year, at.month, at.day - 1, 18),
+          remindAt: remindAt,
         );
+      }
+      for (final id in plan.cancel) {
+        await NotificationService.instance.cancelReminder(id);
       }
     } catch (e) {
       debugPrint('DashboardScreen: could not schedule reminders. $e');
@@ -344,4 +347,23 @@ class _QuickAction extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Which inspections get a reminder (the evening before, 18:00) and which
+/// must lose theirs because they were started, completed or unscheduled
+/// since — otherwise a stale reminder still fires (QC-040).
+({Map<String, DateTime> schedule, List<String> cancel}) reminderPlan(
+  List<Inspection> all,
+) {
+  final schedule = <String, DateTime>{};
+  final cancel = <String>[];
+  for (final inspection in all) {
+    final at = inspection.scheduledAt;
+    if (inspection.status == InspectionStatus.scheduled && at != null) {
+      schedule[inspection.id] = DateTime(at.year, at.month, at.day - 1, 18);
+    } else {
+      cancel.add(inspection.id);
+    }
+  }
+  return (schedule: schedule, cancel: cancel);
 }
