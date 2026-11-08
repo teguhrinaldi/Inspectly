@@ -35,7 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/inspections', [InspectionController::class, 'index']);
     Route::get('/inspections/{inspection}', [InspectionController::class, 'show']);
     Route::post('/inspections', [InspectionController::class, 'store']);
-    Route::put('/inspections/{inspection}', [InspectionController::class, 'update']);
+    // Direct attribute edits (status, inspector, schedule) are an admin
+    // action; inspectors move an inspection forward via start/complete.
+    Route::put('/inspections/{inspection}', [InspectionController::class, 'update'])->middleware('admin');
     Route::post('/inspections/{inspection}/start', [InspectionController::class, 'start']);
     Route::post('/inspections/{inspection}/complete', [InspectionController::class, 'complete']);
     Route::put('/inspections/{inspection}/items/{item}', [InspectionItemController::class, 'update']);

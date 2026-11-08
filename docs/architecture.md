@@ -124,7 +124,7 @@ GET    /me                                 -> {user}          (not data-wrapped)
 GET    /inspections?status=&site_id=&search=&inspector_id=
 GET    /inspections/{id}
 POST   /inspections   {template_id, site_id, customer_id, inspector_id, recurrence, status?}
-PUT    /inspections/{id}
+PUT    /inspections/{id}            (admin)
 POST   /inspections/{id}/start      {location_lat?, location_lng?}
 POST   /inspections/{id}/complete
 

@@ -19,7 +19,12 @@ class InspectionStoreRequest extends FormRequest
             'template_id' => ['required', 'integer', 'exists:inspection_templates,id'],
             'customer_id' => ['required', 'integer', 'exists:customers,id'],
             'site_id' => ['required', 'integer', 'exists:sites,id'],
-            'inspector_id' => ['required', 'integer', 'exists:users,id'],
+            // Inspectors schedule work for themselves; only an admin may
+            // assign an inspection to someone else.
+            'inspector_id' => array_merge(
+                ['required', 'integer', 'exists:users,id'],
+                $this->user()?->isAdmin() ? [] : [Rule::in([$this->user()?->id])],
+            ),
             'status' => ['sometimes', Rule::in([
                 Inspection::STATUS_DRAFT,
                 Inspection::STATUS_SCHEDULED,

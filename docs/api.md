@@ -31,8 +31,8 @@ GET  /me                                              -> {user}
 ```
 GET  /inspections?status=&site_id=&search=&inspector_id=&per_page=   -> paginated list (default 50, max 100), each row includes items[] and findings[] with evidence
 GET  /inspections/{id}
-POST /inspections          {template_id, site_id, customer_id, inspector_id, recurrence, status?, scheduled_at?}
-PUT  /inspections/{id}
+POST /inspections          {template_id, site_id, customer_id, inspector_id, recurrence, status?, scheduled_at?}   (non-admin: inspector_id must be the caller)
+PUT  /inspections/{id}     (admin)
 POST /inspections/{id}/start      {location_lat?, location_lng?}
 POST /inspections/{id}/complete
 PUT  /inspections/{id}/items/{itemId}   {result?, note?}   -> the updated InspectionItem (not the Inspection)
