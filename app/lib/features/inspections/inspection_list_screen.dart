@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -34,11 +36,24 @@ class _InspectionListScreenState extends ConsumerState<InspectionListScreen> {
   InspectionStatus? _statusFilter;
   final _searchController = TextEditingController();
   String _search = '';
+  Timer? _searchDebounce;
+  // Last loaded list, shown while a new search/filter loads so the list
+  // doesn't flash to a spinner on every keystroke (QC-041).
+  AsyncValue<List<Inspection>>? _lastLoaded;
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(
+      const Duration(milliseconds: 300),
+      () => setState(() => _search = value.trim()),
+    );
   }
 
   /// Upcoming work first (soonest first), then past inspections newest first.
@@ -60,7 +75,11 @@ class _InspectionListScreenState extends ConsumerState<InspectionListScreen> {
       status: _statusFilter,
       search: _search.isEmpty ? null : _search,
     );
-    final inspectionsAsync = ref.watch(inspectionListProvider(filter));
+    final current = ref.watch(inspectionListProvider(filter));
+    if (current.hasValue) _lastLoaded = current;
+    final inspectionsAsync = current.isLoading && _lastLoaded != null
+        ? _lastLoaded!
+        : current;
 
     return Scaffold(
       body: SafeArea(
@@ -109,7 +128,7 @@ class _InspectionListScreenState extends ConsumerState<InspectionListScreen> {
                       borderSide: BorderSide(color: p.primary),
                     ),
                   ),
-                  onChanged: (value) => setState(() => _search = value),
+                  onChanged: _onSearchChanged,
                 ),
               ),
               SizedBox(
