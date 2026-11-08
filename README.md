@@ -29,7 +29,7 @@ INSPECTLY/
   with a realistic multi-site inspection story). Swap to **API Mode** by
   changing one file (`app/lib/app/providers/repository_providers.dart`) once
   you've deployed the backend.
-- **BE/** — Laravel 10 API (Sanctum auth, full REST resource layer) plus a
+- **BE/** — Laravel 12 API (Sanctum auth, full REST resource layer) plus a
   Filament admin panel for managing customers, sites, inspectors, templates
   and inspections.
 - **docs/** — read `docs/installation.md` first.

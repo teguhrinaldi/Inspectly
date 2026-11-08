@@ -6,36 +6,24 @@
 |---|---|---|
 | Flutter | 3.47.x (stable) | `flutter doctor` should show no blocking issues for your target platform |
 | Dart | 3.13.x | bundled with Flutter |
-| PHP | 8.1+ (8.2/8.3 recommended) | see "PHP version" note below |
+| PHP | 8.3+ | see "PHP version" note below |
 | Composer | 2.x | |
 | MySQL | 8.x (MariaDB 10.6+ also works) | |
 | Node.js | only needed if you touch Filament's compiled admin assets | not required for normal use |
 
 ### PHP version note
 
-This backend was built and verified against PHP 8.1 (Laravel 10.x), because
-that was the constraint of the original build environment. **Laravel 10 is
-now end-of-life** and has a small number of unpatched, low-severity advisories
-(signed URL path confusion; CRLF injection in the default `email` validation
-rule — neither is exercised by this codebase's actual usage, but you should
-not rely on that indefinitely). If your deployment target has PHP 8.2 or
-8.3 available (most current shared hosting and all modern VPS images do),
-we recommend upgrading before going to production:
+The backend runs on **Laravel 12** with Sanctum 4 and Filament 3.3, and needs
+**PHP 8.3 or newer** (`composer.json` requires `php: ^8.3`). It was upgraded
+from Laravel 10 (end-of-life) straight to 12; `composer audit` reports no
+advisories for the locked dependencies.
 
-```bash
-composer require "php:^8.2" # bump the platform constraint
-composer require "laravel/framework:^12.0" "laravel/sanctum:^4.0"
-composer update
-```
-
-Note this is a **skeleton migration**, not just a version bump — Laravel 11+
-restructured `bootstrap/app.php` and removed `app/Http/Kernel.php`. Follow
-[Laravel's official upgrade guide](https://laravel.com/docs/upgrade) for your
-target version, and re-run the test suite (`php artisan test`) afterward. We
-deliberately did not perform this migration inside the shipped codebase so
-that what you receive is a fully verified, working baseline on the widely-
-supported PHP 8.1/Laravel 10 combination; upgrading is a deliberate choice you
-make for your own deployment timeline, not something forced on you.
+The application keeps the classic directory layout (`app/Http/Kernel.php`,
+`app/Console/Kernel.php`, the service providers in `config/app.php`).
+Laravel 11 and 12 still support that layout, so it was not migrated to the
+slim `bootstrap/app.php` skeleton; that move is optional and purely
+structural. See [Laravel's upgrade guide](https://laravel.com/docs/12.x/upgrade)
+before upgrading further.
 
 ## 2. Demo Mode (Flutter only, no backend)
 
@@ -147,7 +135,7 @@ nothing crashes or blocks the workflow.
   keys (already included in this project).
 - **Laravel: "could not find driver"** — enable `pdo_mysql` in `php.ini`.
 - **Composer blocks install over "security vulnerability advisories"** — this
-  is Composer 2.9+'s audit-on-install feature reacting to Laravel 10's EOL
-  status (see the PHP version note above). Run with
-  `composer install --no-security-blocking` if you intend to stay on PHP 8.1/
-  Laravel 10 for now.
+  is Composer 2.9+'s audit-on-install feature: a newly published advisory now
+  affects a locked package. Run `composer audit` to see which one and
+  `composer update <package>` to move to the patched release; don't silence
+  the check.

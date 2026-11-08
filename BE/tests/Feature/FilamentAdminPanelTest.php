@@ -139,7 +139,7 @@ class FilamentAdminPanelTest extends TestCase
         ];
     }
 
-    /** @dataProvider storyDays */
+    #[\PHPUnit\Framework\Attributes\DataProvider('storyDays')]
     public function test_dashboard_reproduces_the_demo_story(?string $day): void
     {
         if ($day !== null) {

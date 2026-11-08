@@ -8,7 +8,7 @@ via `--dart-define=INSPECTLY_API_BASE_URL=...` (see `docs/installation.md` §4).
 
 ## Backend requirements
 
-- PHP 8.1+ (8.2/8.3 recommended — see the PHP version note in
+- PHP 8.3+ (Laravel 12 — see the PHP version note in
   `docs/installation.md`) with the standard Laravel extension set
   (`pdo_mysql`, `mbstring`, `openssl`, `curl`, `zip`, `gd`, `fileinfo`,
   `bcmath`, `intl`).

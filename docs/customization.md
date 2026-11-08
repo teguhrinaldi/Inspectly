@@ -72,9 +72,6 @@ nothing else in the app needs to change.
   offline against Mode B. If your buyers need this, it's the natural next
   layer to add on top of the existing repository seam (see
   `docs/architecture.md` §4).
-- **Laravel 10 / PHP 8.1** — functional and fully tested, but Laravel 10 is
-  EOL. See the PHP version note in `docs/installation.md` before a
-  production launch.
 - **QR-scan-to-create-inspection** always creates a `one_time`,
   `DRAFT`-status inspection — if your workflow wants the QR flow to also let
   the inspector pick a recurrence at creation time, that's a small addition
