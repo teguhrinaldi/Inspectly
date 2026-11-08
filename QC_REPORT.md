@@ -187,3 +187,45 @@ Kode Flutter tergolong rapi: analyzer dan format bersih, semua test lulus, dan a
 Setiap fase akan diverifikasi dengan `flutter analyze`, `flutter test`, `php artisan test`, `pint --test`, dan (untuk UI) screenshot di phone 360dp dan tablet sesuai referensi `docs/design/`.
 
 *Audit berhenti di sini — tidak ada perubahan kode. Menunggu persetujuan untuk memulai perbaikan.*
+
+---
+
+## 7. Hasil perbaikan (branch `qc/full-audit`, 2026-11-08)
+
+| Status | Critical | High | Medium | Low | Total |
+|---|---|---|---|---|---|
+| Fixed | – | 15 | 21 | 5 | **41** |
+| Sebagian (fix + sisa keputusan/cek manual) | 1 | 2 | 4 | 3 | **10** |
+| Won't Fix (tidak terbukti / di luar cakupan rilis) | – | 1 | 3 | 3 | **7** |
+| Butuh Keputusan | 1 | – | 3 | 1 | **5** |
+
+Catatan penting: beberapa temuan audit **tidak terbukti** saat diuji (QC-018 status bar; sebagian QC-013, QC-017, QC-032, QC-038). Temuan layout kini berdasarkan bukti dari matriks test, bukan estimasi. Satu temuan baru (QC-063) ditemukan saat verifikasi E2E.
+
+### Keputusan yang dibutuhkan
+1. **QC-001**: batasi aksi tulis (start/checklist/finding/foto/signature/complete) ke inspector pemilik + admin?
+2. **QC-002**: upgrade Laravel 10 → 12/13 + Sanctum 4 + Filament (restyle admin diverifikasi ulang).
+3. **QC-003**: masa berlaku token (saat ini tanpa batas).
+4. **QC-007/036**: boleh complete langsung dari scheduled? wajib foto untuk item `requires_evidence`? minimal goresan tanda tangan?
+5. **QC-019**: applicationId final & label launcher; buat upload keystore + `android/key.properties`.
+6. **QC-020**: tanggal demo di-anchor ke hari ini (riwayat tidak lagi "27 Sep" seperti mockup)?
+7. **QC-022**: kebijakan password (min 6 → 8+?).
+8. **QC-026**: status `review` — tambah aksi "Submit for review" atau hapus?
+9. **QC-031**: back di tab non-Home → Home? dialog "Buang perubahan?" untuk tanda tangan/form finding?
+10. **QC-043**: lokasi terakhir (cepat) vs GPS akurat ≤10 dtk per foto.
+11. **QC-047**: antrean sinkronisasi offline untuk API mode.
+12. **QC-051/053/059/062**: CORS ke domain admin; GET /reports mencatat activity; warna badge In Progress; Fail→Pass meninggalkan finding open.
+
+### Verifikasi akhir (dari nol)
+| Langkah | Hasil |
+|---|---|
+| `flutter clean` → `pub get` → `analyze` | No issues |
+| `dart format --set-exit-if-changed lib test tool` | 0 berubah |
+| `flutter test` | **98 lulus**, 1 skip (E2E API butuh `INSPECTLY_E2E_URL`) — termasuk matriks layout 36 kombinasi |
+| `flutter build apk --release` | OK, 83,4 MB (sebelumnya 88 MB) — **masih debug-signed** sampai `key.properties` dibuat |
+| `composer install` / `pint --test` | OK / PASS 185 file |
+| `php artisan test` | **63 lulus** (awal: 34 lulus, 1 gagal) |
+| `migrate:fresh --seed` (SQLite) | OK, 48 inspeksi / 4 user. **MySQL belum diuji** |
+| E2E API nyata (`test/e2e/api_flow_test.dart` vs `php artisan serve`) | Lulus: login, admin ditolak, list semua halaman, QR, create, start, 422 complete dini, checklist, finding, upload foto, 2 tanda tangan, complete (idempoten), 409 restart, history/comparison/activity, logout, login ulang |
+| E2E UI Demo (`test/e2e/demo_ui_flow_test.dart`) | Lulus: login form → detail → logout → login ulang |
+| Sisa debug | Tidak ada `print`/`dd`/`dump`/`console.log`; 1 TODO (applicationId, QC-019); kredensial hanya akun demo yang dibatasi Demo Mode |
+| iOS / web | Tidak dibangun (Windows; app hanya menargetkan mobile) |
