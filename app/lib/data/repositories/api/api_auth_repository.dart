@@ -5,6 +5,7 @@ import '../../../core/network/api_client.dart';
 import '../../../core/storage/token_storage.dart';
 import '../../../core/utils/result.dart';
 import '../../models/app_user.dart';
+import '../../models/enums.dart';
 import '../auth_repository.dart';
 
 class ApiAuthRepository implements AuthRepository {
@@ -32,6 +33,16 @@ class ApiAuthRepository implements AuthRepository {
         await _tokenStorage.write(data['token'] as String);
         return AppUser.fromJson(data['user'] as Map<String, dynamic>);
       });
+      if (user.role != UserRole.inspector) {
+        // Admins work in the web panel only (same rule as Demo Mode):
+        // revoke the token that was just issued and don't keep it.
+        await logout();
+        return const Failed(
+          ForbiddenFailure(
+            'Admin accounts sign in on the web admin panel, not in the app.',
+          ),
+        );
+      }
       await _tokenStorage.writeUser(jsonEncode(user.toJson()));
       return Success(user);
     } on Failure catch (f) {
