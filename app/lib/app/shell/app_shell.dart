@@ -42,7 +42,17 @@ class AppShell extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => PopScope(
+    // Android back on Inspections/Create/Reports/Profile returns to Home
+    // instead of closing the app (QC-031).
+    canPop: navigationShell.currentIndex == 0,
+    onPopInvokedWithResult: (didPop, _) {
+      if (!didPop) _go(0);
+    },
+    child: _layout(context),
+  );
+
+  Widget _layout(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     if (ResponsiveContent.isTablet(context) &&
         width >= ResponsiveContent.tabletBreakpoint) {

@@ -6,6 +6,7 @@ import '../../../core/widgets/app_image.dart';
 import '../../../core/widgets/status_style.dart';
 import '../../../data/models/enums.dart';
 import '../../findings/widgets/photo_capture.dart';
+import '../../../core/widgets/confirm_discard.dart';
 
 class FindingDraft {
   const FindingDraft({
@@ -116,8 +117,25 @@ class _FindingFormSheetState extends State<FindingFormSheet> {
     );
   }
 
+  bool get _dirty =>
+      _titleController.text.trim() != (widget.itemLabel ?? '').trim() ||
+      _descriptionController.text.trim().isNotEmpty ||
+      _photos.isNotEmpty;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => PopScope(
+    // A filled-in finding asks before being discarded (QC-031). Save pops
+    // with Navigator.pop, which is not affected by this.
+    canPop: false,
+    onPopInvokedWithResult: (didPop, _) async {
+      if (didPop) return;
+      final navigator = Navigator.of(context);
+      if (!_dirty || await confirmDiscard(context)) navigator.pop();
+    },
+    child: _form(context),
+  );
+
+  Widget _form(BuildContext context) {
     final p = context.palette;
     Widget label(String text) => Padding(
       padding: const EdgeInsets.only(bottom: 8),

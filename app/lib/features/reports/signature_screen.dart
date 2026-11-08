@@ -25,6 +25,7 @@ import '../../core/errors/failure.dart';
 import '../../app/providers/permissions.dart';
 import '../../app/providers/auth_providers.dart';
 import '../../core/utils/completion_rules.dart';
+import '../../core/widgets/confirm_discard.dart';
 
 /// Inspector signature + customer acknowledgement. Once both are captured
 /// the inspection is completed and the risk summary opens.
@@ -216,52 +217,61 @@ class _SignatureBodyState extends ConsumerState<_SignatureBody> {
     final completed = inspection.status == InspectionStatus.completed;
     final hasDrawing = _inspectorPad.isNotEmpty || _customerPad.isNotEmpty;
 
-    return ResponsiveContent(
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-        children: [
-          _SignatureBlock(
-            title: 'Inspector Signature',
-            signer: inspection.inspectorName,
-            controller: _inspectorPad,
-            existing: _existing(SignatureType.inspector),
-            editing: _resigning.contains(SignatureType.inspector),
-            readOnly: completed,
-            onResign: () =>
-                setState(() => _resigning.add(SignatureType.inspector)),
-          ),
-          const SizedBox(height: 22),
-          _SignatureBlock(
-            title: 'Customer Acknowledgement',
-            signer: inspection.customerName,
-            controller: _customerPad,
-            existing: _existing(SignatureType.customer),
-            editing: _resigning.contains(SignatureType.customer),
-            readOnly: completed,
-            onResign: () =>
-                setState(() => _resigning.add(SignatureType.customer)),
-          ),
-          const SizedBox(height: 24),
-          if (!completed)
-            ElevatedButton(
-              onPressed: hasDrawing && !_saving ? _save : null,
-              child: _saving
-                  ? const SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Text('Save Signature'),
+    return PopScope(
+      // Unsaved signatures ask before being thrown away (QC-031).
+      canPop: !hasDrawing || _saving,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final navigator = Navigator.of(context);
+        if (await confirmDiscard(context)) navigator.pop();
+      },
+      child: ResponsiveContent(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+          children: [
+            _SignatureBlock(
+              title: 'Inspector Signature',
+              signer: inspection.inspectorName,
+              controller: _inspectorPad,
+              existing: _existing(SignatureType.inspector),
+              editing: _resigning.contains(SignatureType.inspector),
+              readOnly: completed,
+              onResign: () =>
+                  setState(() => _resigning.add(SignatureType.inspector)),
             ),
-          if (!completed) const SizedBox(height: 12),
-          OutlinedButton.icon(
-            onPressed: _sharing ? null : _share,
-            icon: const Icon(LucideIcons.share, size: 18),
-            label: const Text('Share'),
-          ),
-        ],
+            const SizedBox(height: 22),
+            _SignatureBlock(
+              title: 'Customer Acknowledgement',
+              signer: inspection.customerName,
+              controller: _customerPad,
+              existing: _existing(SignatureType.customer),
+              editing: _resigning.contains(SignatureType.customer),
+              readOnly: completed,
+              onResign: () =>
+                  setState(() => _resigning.add(SignatureType.customer)),
+            ),
+            const SizedBox(height: 24),
+            if (!completed)
+              ElevatedButton(
+                onPressed: hasDrawing && !_saving ? _save : null,
+                child: _saving
+                    ? const SizedBox.square(
+                        dimension: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text('Save Signature'),
+              ),
+            if (!completed) const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _sharing ? null : _share,
+              icon: const Icon(LucideIcons.share, size: 18),
+              label: const Text('Share'),
+            ),
+          ],
+        ),
       ),
     );
   }
