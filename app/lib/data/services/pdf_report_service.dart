@@ -39,13 +39,24 @@ class PdfReportService {
       }
     }
     final signatureBytes = <String, Uint8List>{};
-    for (final sig in inspection.signatures) {
+    for (final sig in latestSignatures(inspection.signatures)) {
       final bytes = await _loadFileBytes(sig.displaySource);
       if (bytes != null) signatureBytes[sig.id] = bytes;
     }
 
+    // Helvetica (the PDF default) only covers Latin-1: typographic quotes,
+    // dashes and many accented names would print as boxes. The bundled
+    // Inter font is used as a fallback for those glyphs (QC-044).
+    final fallback = <pw.Font>[];
+    try {
+      fallback.add(
+        pw.Font.ttf(await rootBundle.load('assets/fonts/Inter-Regular.ttf')),
+      );
+    } catch (_) {}
+
     doc.addPage(
       pw.MultiPage(
+        theme: pw.ThemeData.withFont(fontFallback: fallback),
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
         header: (context) => _buildHeader(inspection),
@@ -283,11 +294,13 @@ class PdfReportService {
                       ),
                     ),
                     pw.SizedBox(width: 6),
-                    pw.Text(
-                      finding.title,
-                      style: pw.TextStyle(
-                        fontSize: 11,
-                        fontWeight: pw.FontWeight.bold,
+                    pw.Expanded(
+                      child: pw.Text(
+                        finding.title,
+                        style: pw.TextStyle(
+                          fontSize: 11,
+                          fontWeight: pw.FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -306,7 +319,10 @@ class PdfReportService {
                 ],
                 if (finding.evidence.isNotEmpty) ...[
                   pw.SizedBox(height: 6),
-                  pw.Row(
+                  // Wrap: more than ~5 photos continue on the next line
+                  // instead of running off the page.
+                  pw.Wrap(
+                    runSpacing: 6,
                     children: finding.evidence
                         .where((e) => evidenceBytes.containsKey(e.id))
                         .map(
@@ -345,7 +361,7 @@ class PdfReportService {
         ),
         pw.SizedBox(height: 6),
         pw.Row(
-          children: inspection.signatures.map((sig) {
+          children: latestSignatures(inspection.signatures).map((sig) {
             final bytes = signatureBytes[sig.id];
             return pw.Expanded(
               child: pw.Column(
@@ -429,4 +445,15 @@ class PdfReportService {
           b[1] == 0x50 &&
           b[2] == 0x4E &&
           b[3] == 0x47); // PNG
+}
+
+/// The newest signature of each type, in first-signed order: re-signing
+/// replaces the earlier signature in the report (QC-044).
+List<InspectionSignature> latestSignatures(List<InspectionSignature> all) {
+  final byType = <SignatureType, InspectionSignature>{};
+  for (final s in all) {
+    final kept = byType[s.type];
+    if (kept == null || !s.signedAt.isBefore(kept.signedAt)) byType[s.type] = s;
+  }
+  return all.where((s) => byType[s.type] == s).toList();
 }
