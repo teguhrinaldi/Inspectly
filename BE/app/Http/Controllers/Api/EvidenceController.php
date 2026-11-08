@@ -9,6 +9,7 @@ use App\Models\Activity;
 use App\Models\Evidence;
 use App\Models\Inspection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class EvidenceController extends Controller
 {
@@ -46,10 +47,10 @@ class EvidenceController extends Controller
         $this->authorize('write', $evidence->inspection);
 
         if ($evidence->file_path) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($evidence->file_path);
+            Storage::disk('public')->delete($evidence->file_path);
         }
         if ($evidence->watermarked_path) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($evidence->watermarked_path);
+            Storage::disk('public')->delete($evidence->watermarked_path);
         }
         $evidence->delete();
 

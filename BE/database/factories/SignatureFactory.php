@@ -7,7 +7,7 @@ use App\Models\Signature;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\Signature>
+ * @extends Factory<Signature>
  */
 class SignatureFactory extends Factory
 {

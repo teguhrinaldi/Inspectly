@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Customer;
+use App\Models\Evidence;
+use App\Models\Finding;
 use App\Models\Inspection;
 use App\Models\InspectionItem;
 use App\Models\InspectionTemplate;
@@ -122,7 +124,7 @@ class InspectionStateGuardTest extends TestCase
             ->assertStatus(422)
             ->assertJsonValidationErrors('items');
 
-        \App\Models\Evidence::create([
+        Evidence::create([
             'inspection_id' => $inspection->id,
             'inspection_item_id' => $item->id,
             'file_path' => 'evidence/x.jpg',
@@ -136,11 +138,11 @@ class InspectionStateGuardTest extends TestCase
         $inspection = $this->inspection(Inspection::STATUS_IN_PROGRESS);
         $item = $inspection->items()->first();
         $item->templateChecklistItem->update(['requires_evidence' => true]);
-        $finding = \App\Models\Finding::factory()->create([
+        $finding = Finding::factory()->create([
             'inspection_id' => $inspection->id,
             'inspection_item_id' => $item->id,
         ]);
-        \App\Models\Evidence::create([
+        Evidence::create([
             'inspection_id' => $inspection->id,
             'finding_id' => $finding->id,
             'file_path' => 'evidence/y.jpg',

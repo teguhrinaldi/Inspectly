@@ -13,7 +13,9 @@ use App\Models\InspectionTemplate;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class InspectionController extends Controller
 {
@@ -164,7 +166,7 @@ class InspectionController extends Controller
             );
 
             if ($inspection->items->contains(fn (InspectionItem $item) => $item->result === null)) {
-                throw \Illuminate\Validation\ValidationException::withMessages([
+                throw ValidationException::withMessages([
                     'items' => ['Every checklist item needs a result before the inspection can be completed.'],
                 ]);
             }
@@ -183,7 +185,7 @@ class InspectionController extends Controller
                 return $item->evidence->isEmpty() && $onFindings === 0;
             });
             if ($missing->isNotEmpty()) {
-                throw \Illuminate\Validation\ValidationException::withMessages([
+                throw ValidationException::withMessages([
                     'items' => ['These items need at least one photo: '.$missing->pluck('label')->join(', ').'.'],
                 ]);
             }
@@ -227,12 +229,12 @@ class InspectionController extends Controller
         return (new InspectionResource($inspection))->response();
     }
 
-    private function nextDueAt(string $recurrence, \DateTimeInterface $from): ?\Illuminate\Support\Carbon
+    private function nextDueAt(string $recurrence, \DateTimeInterface $from): ?Carbon
     {
         return match ($recurrence) {
-            Inspection::RECURRENCE_WEEKLY => \Illuminate\Support\Carbon::parse($from)->addWeek(),
-            Inspection::RECURRENCE_MONTHLY => \Illuminate\Support\Carbon::parse($from)->addMonthNoOverflow(),
-            Inspection::RECURRENCE_QUARTERLY => \Illuminate\Support\Carbon::parse($from)->addMonthsNoOverflow(3),
+            Inspection::RECURRENCE_WEEKLY => Carbon::parse($from)->addWeek(),
+            Inspection::RECURRENCE_MONTHLY => Carbon::parse($from)->addMonthNoOverflow(),
+            Inspection::RECURRENCE_QUARTERLY => Carbon::parse($from)->addMonthsNoOverflow(3),
             default => null,
         };
     }

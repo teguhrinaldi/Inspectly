@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Inspection extends Model
 {
@@ -22,7 +23,7 @@ class Inspection extends Model
                 ->merge($inspection->signatures()->pluck('file_path'))
                 ->filter()
                 ->all();
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($paths);
+            Storage::disk('public')->delete($paths);
         });
     }
 

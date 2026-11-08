@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Inspection;
+use App\Models\InspectionItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\InspectionItem>
+ * @extends Factory<InspectionItem>
  */
 class InspectionItemFactory extends Factory
 {

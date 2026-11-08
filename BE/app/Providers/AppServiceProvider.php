@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // A bearer token only authenticates while its owner is still active,
         // so deactivating an account cuts off existing app sessions too.
-        \Laravel\Sanctum\Sanctum::authenticateAccessTokensUsing(
+        Sanctum::authenticateAccessTokensUsing(
             fn ($accessToken, bool $isValid) => $isValid && $accessToken->tokenable?->status === 'active'
         );
     }

@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Finding;
 use App\Models\Inspection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -149,7 +150,7 @@ class InspectionStats
     public function openFindings(): int
     {
         return $this->latestPerSite()->sum(
-            fn (Inspection $i) => $i->findings->where('status', \App\Models\Finding::STATUS_OPEN)->count()
+            fn (Inspection $i) => $i->findings->where('status', Finding::STATUS_OPEN)->count()
         );
     }
 }

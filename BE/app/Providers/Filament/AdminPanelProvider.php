@@ -2,6 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard;
+use App\Filament\Pages\Reports;
+use App\Filament\Pages\Settings;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -44,9 +47,9 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn () => view('filament.partials.user-name'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->pages([
-                \App\Filament\Pages\Dashboard::class,
-                \App\Filament\Pages\Reports::class,
-                \App\Filament\Pages\Settings::class,
+                Dashboard::class,
+                Reports::class,
+                Settings::class,
             ])
             ->widgets([])
             ->middleware([

@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -30,7 +33,7 @@ class Handler extends ExceptionHandler
         // The API has no login page: an unauthenticated API call is always a
         // 401 JSON, also without an Accept: application/json header (it used
         // to fail with "Route [login] not defined" -> 500) (QC-063).
-        $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) {
+        $this->renderable(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
@@ -38,7 +41,7 @@ class Handler extends ExceptionHandler
 
         // Missing records on the API: a plain message instead of Laravel's
         // "No query results for model [App\Models\...]" (internal names).
-        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {
+        $this->renderable(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json(['message' => 'Not found.'], 404);
             }

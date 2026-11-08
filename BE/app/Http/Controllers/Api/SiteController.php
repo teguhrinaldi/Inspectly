@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SiteStoreRequest;
 use App\Http\Requests\SiteUpdateRequest;
+use App\Http\Resources\FindingResource;
 use App\Http\Resources\InspectionResource;
 use App\Http\Resources\SiteResource;
 use App\Models\Finding;
@@ -12,6 +13,7 @@ use App\Models\Inspection;
 use App\Models\Site;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class SiteController extends Controller
 {
@@ -142,9 +144,9 @@ class SiteController extends Controller
         foreach ($currentByKey as $key => $finding) {
             $results[] = [
                 'classification' => $previousOpenByKey->has($key) ? 'STILL_OPEN' : 'NEW',
-                'finding' => new \App\Http\Resources\FindingResource($finding),
+                'finding' => new FindingResource($finding),
                 'previous_finding' => $previousOpenByKey->has($key)
-                    ? new \App\Http\Resources\FindingResource($previousOpenByKey->get($key))
+                    ? new FindingResource($previousOpenByKey->get($key))
                     : null,
             ];
         }
@@ -154,7 +156,7 @@ class SiteController extends Controller
                 $results[] = [
                     'classification' => 'RESOLVED',
                     'finding' => null,
-                    'previous_finding' => new \App\Http\Resources\FindingResource($previousFinding),
+                    'previous_finding' => new FindingResource($previousFinding),
                 ];
             }
         }
@@ -171,9 +173,9 @@ class SiteController extends Controller
      * Open findings keyed by their checklist item; a second finding on the
      * same item is keyed by item + title, and one without an item by title.
      *
-     * @return \Illuminate\Support\Collection<string, Finding>
+     * @return Collection<string, Finding>
      */
-    private function keyFindings(Inspection $inspection): \Illuminate\Support\Collection
+    private function keyFindings(Inspection $inspection): Collection
     {
         $keyed = collect();
         foreach ($inspection->findings->where('status', Finding::STATUS_OPEN) as $finding) {

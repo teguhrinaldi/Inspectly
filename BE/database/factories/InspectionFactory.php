@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\Inspection>
+ * @extends Factory<Inspection>
  */
 class InspectionFactory extends Factory
 {

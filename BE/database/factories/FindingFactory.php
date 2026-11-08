@@ -7,7 +7,7 @@ use App\Models\Inspection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\Finding>
+ * @extends Factory<Finding>
  */
 class FindingFactory extends Factory
 {

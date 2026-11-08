@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Evidence;
 use App\Models\Inspection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\Evidence>
+ * @extends Factory<Evidence>
  */
 class EvidenceFactory extends Factory
 {

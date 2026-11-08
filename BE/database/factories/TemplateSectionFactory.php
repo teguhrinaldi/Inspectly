@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\InspectionTemplate;
+use App\Models\TemplateSection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\TemplateSection>
+ * @extends Factory<TemplateSection>
  */
 class TemplateSectionFactory extends Factory
 {

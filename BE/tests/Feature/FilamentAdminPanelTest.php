@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\Settings;
+use App\Filament\Resources\InspectionResource\Pages\ListInspections;
 use App\Filament\Resources\InspectionTemplateResource\Pages\EditInspectionTemplate;
 use App\Models\Customer;
 use App\Models\Inspection;
@@ -11,8 +13,12 @@ use App\Models\Inspector;
 use App\Models\Setting;
 use App\Models\Site;
 use App\Models\User;
+use App\Support\InspectionStats;
+use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class FilamentAdminPanelTest extends TestCase
@@ -139,16 +145,16 @@ class FilamentAdminPanelTest extends TestCase
         ];
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('storyDays')]
+    #[DataProvider('storyDays')]
     public function test_dashboard_reproduces_the_demo_story(?string $day): void
     {
         if ($day !== null) {
-            $this->travelTo(\Illuminate\Support\Carbon::parse($day));
+            $this->travelTo(Carbon::parse($day));
         }
-        $this->seed(\Database\Seeders\DemoSeeder::class);
+        $this->seed(DemoSeeder::class);
         $this->actingAs(User::where('email', 'admin@inspectly.test')->first());
 
-        $dashboard = new \App\Filament\Pages\Dashboard;
+        $dashboard = new Dashboard;
         $stats = collect($dashboard->stats())->keyBy('label');
         // QC-026: the 4th KPI is Open Findings (master mockup: 7, -2%).
         $this->assertSame(['Total Inspections', 'Completed', 'In Progress', 'Open Findings'], $stats->keys()->all());
@@ -171,12 +177,12 @@ class FilamentAdminPanelTest extends TestCase
 
     public function test_inspection_overview_counts_activity_per_bucket(): void
     {
-        $this->seed(\Database\Seeders\DemoSeeder::class);
-        $stats = new \App\Support\InspectionStats;
+        $this->seed(DemoSeeder::class);
+        $stats = new InspectionStats;
         $all = $stats->inspections();
 
-        foreach (array_keys(\App\Support\InspectionStats::PERIODS) as $period) {
-            [, $count, $size] = \App\Support\InspectionStats::PERIODS[$period];
+        foreach (array_keys(InspectionStats::PERIODS) as $period) {
+            [, $count, $size] = InspectionStats::PERIODS[$period];
             $overview = $stats->overview($period);
             $this->assertCount($count, $overview['labels']);
             $first = today()->subDays($count * $size - 1);
@@ -188,13 +194,13 @@ class FilamentAdminPanelTest extends TestCase
 
     public function test_admin_can_schedule_an_inspection_with_the_template_checklist(): void
     {
-        $this->seed(\Database\Seeders\DemoSeeder::class);
+        $this->seed(DemoSeeder::class);
         $this->actingAs(User::where('email', 'admin@inspectly.test')->first());
         $template = InspectionTemplate::where('name', 'Safety Inspection')->firstOrFail();
         $site = Site::where('name', 'Westlake Apartments')->firstOrFail();
         $inspector = User::where('email', 'sarah.johnson@inspectly.test')->firstOrFail();
 
-        Livewire::test(\App\Filament\Resources\InspectionResource\Pages\ListInspections::class)
+        Livewire::test(ListInspections::class)
             ->callAction('create', [
                 'template_id' => $template->id,
                 'customer_id' => $site->customer_id,
@@ -213,9 +219,9 @@ class FilamentAdminPanelTest extends TestCase
 
     public function test_inspections_list_search_and_filters(): void
     {
-        $this->seed(\Database\Seeders\DemoSeeder::class);
+        $this->seed(DemoSeeder::class);
         $this->actingAs(User::where('email', 'admin@inspectly.test')->first());
-        $page = \App\Filament\Resources\InspectionResource\Pages\ListInspections::class;
+        $page = ListInspections::class;
 
         $riverside = Inspection::whereHas('site', fn ($q) => $q->where('name', 'Riverside Office Complex'))->get();
         $others = Inspection::whereHas('site', fn ($q) => $q->where('name', '!=', 'Riverside Office Complex'))->limit(3)->get();

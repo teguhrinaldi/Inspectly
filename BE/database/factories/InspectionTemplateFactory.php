@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\InspectionTemplate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\InspectionTemplate>
+ * @extends Factory<InspectionTemplate>
  */
 class InspectionTemplateFactory extends Factory
 {
